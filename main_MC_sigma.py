@@ -18,6 +18,12 @@ from utilities import *
 from systems import *
 
 np.random.seed(0)
+X_opt_mc = []
+y_opt_mc = []
+TR_l_mc = []
+xnew_mc = []
+backtrack_1_mc = []
+
 for i in range(30):
 
     model = WO_model()
@@ -48,7 +54,6 @@ for i in range(30):
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_)
 
-    X_opt_mc = []; y_opt_mc = []; TR_l_mc = []; xnew_mc = []; backtrack_1_mc = []
     print('Episode: ',i)
     if not TR_curvature_:
         X_opt, y_opt, TR_l, xnew, backtrack_l             = ITR_GP_opt.RTO_routine()
