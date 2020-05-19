@@ -144,13 +144,13 @@ class WO_system:
 
     def WO_con1_sys_ca(self, u):
         x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
-        pcon1 = x[0] - 0.12   + 5e-3*np.random.normal(0., 1)
+        pcon1 = x[0] - 0.12   + 5e-4*np.random.normal(0., 1)
 
         return -pcon1.toarray()[0]
 
     def WO_con2_sys_ca(self, u):
         x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
-        pcon2 = x[5] - 0.08   + 5e-3*np.random.normal(0., 1)
+        pcon2 = x[5] - 0.08   + 5e-4*np.random.normal(0., 1)
 
         return -pcon2.toarray()[0]
 
