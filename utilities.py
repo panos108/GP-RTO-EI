@@ -16,7 +16,7 @@ import scipy
 import matplotlib.pyplot as plt
 import functools
 from matplotlib.patches import Ellipse
-
+from scipy.stats import norm
 from casadi import *
 
 
@@ -52,12 +52,18 @@ class GP_model:
         Calculates the covariance matrix of a dataset Xnorm
         --- decription ---
         '''
-
+        dist = cdist(X_norm, X_norm, 'seuclidean', V=W) ** 2
+        r = np.sqrt(dist)
         if kernel == 'RBF':
-            dist = cdist(X_norm, X_norm, 'seuclidean', V=W) ** 2
             cov_matrix = sf2 * np.exp(-0.5 * dist)
             return cov_matrix
             # Note: cdist =>  sqrt(sum(u_i-v_i)^2/V[x_i])
+        elif kernel == 'Matern32':
+            cov_matrix = sf2 * (1 + 3**0.5 * r)*np.exp(-r*3**0.5)
+            return cov_matrix
+        elif kernel == 'Matern52':
+            cov_matrix = sf2 * (1 + 5**0.5 * r + 5/3 * r**2) * np.exp(-r*5**0.5)
+            return cov_matrix
         else:
             print('ERROR no kernel with name ', kernel)
 
@@ -133,8 +139,8 @@ class GP_model:
         hypopt = np.zeros((nx_dim + 2, ny_dim))  # hyperparams w's + sf2+ sn2 (one for each GP i.e. output var)
         localsol = [0.] * multi_start  # values for multistart
         localval = np.zeros((multi_start))  # variables for multistart
-
-        invKopt = []
+        self.sn2 = []
+        invKopt  = []
         # --- loop over outputs (GPs) --- #
         for i in range(ny_dim):
             # --- multistart loop --- #
@@ -158,7 +164,7 @@ class GP_model:
             Kopt = Cov_mat(kernel, X_norm, ellopt, sf2opt) + sn2opt * np.eye(n_point)
             # --- inverting K --- #
             invKopt += [np.linalg.solve(Kopt, np.eye(n_point))]
-
+            self.sn2+= [sn2opt]
         return hypopt, invKopt
 
     ########################
@@ -393,7 +399,7 @@ class ITR_GP_RTO:
     # --- GP as obj function --- #
     ##############################
 
-    def GP_obj_f(self, d, GP, xk, obj=2):
+    def GP_obj_f(self, d, GP, xk, obj=3):
         '''
         define exploration - explotation strategy
         '''
@@ -407,6 +413,19 @@ class ITR_GP_RTO:
         elif obj == 2:
             obj_f = GP.GP_inference_np(xk + d)
             return obj_model((xk + d).flatten()) + obj_f[0] - 3 * np.sqrt(obj_f[1])
+        elif obj == 3:
+            fs = self.obj_max
+            obj_f = GP.GP_inference_np(xk + d)
+            mean = obj_model((xk + d).flatten()) + obj_f[0]
+            Delta = fs- mean
+            sigma =  np.sqrt(obj_f[1])
+            # Delta_p = np.max(mean(X) - fs)
+            if sigma == 0.:
+                Z = 0.
+            else:
+                Z = (Delta) / sigma
+            EI = -(sigma * norm.pdf(Z) + Delta * norm.cdf(Z))
+            return EI  # -(GP.GP_inference_np(X)[0][0] + 3 * GP.GP_inference_np(X)[1][0])#
 
         else:
             print('error, objective for GP not specified')
@@ -483,7 +502,7 @@ class ITR_GP_RTO:
         mistmatch constraint
         '''
         return cons_model_i((xk + d).flatten()) + GP_con_i.GP_inference_np(
-            (xk + d).flatten())  # [0]+np.sqrt(0.95/(1-0.95))*sqrt(GP_con_i.GP_inference_np((xk+d).flatten())[1])
+            (xk + d).flatten())[0]-np.sqrt(0.9/(1-0.9))*sqrt(GP_con_i.GP_inference_np((xk+d).flatten())[1] + 0.0005**2)
 
     ##########################
     # --- Inner TR shape --- #
@@ -682,6 +701,8 @@ class ITR_GP_RTO:
     ########################################
     # --- Constraint GP construction --- #
     ########################################
+    ########################################
+    ########################################
 
     def GPs_construction(self, xk, Xtrain, ytrain, ndatplus, H_norm=0.):
         '''
@@ -693,6 +714,7 @@ class ITR_GP_RTO:
         TR_curvature, Curvature_TR_con = self.TR_curvature, self.Curvature_TR_con
 
         # --- objective function GP --- #
+        self.obj_max = np.max(ytrain[0, :].reshape(ndat, 1))
         GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), 'RBF',
                           multi_hyper=multi_hyper, var_out=True)
         GP_con = [0] * ng  # Gaussian processes that output mistmatch (functools)
@@ -706,7 +728,7 @@ class ITR_GP_RTO:
 
         for igp in range(ng):
             GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
-                                   multi_hyper=multi_hyper, var_out=False)
+                                   multi_hyper=multi_hyper, var_out=True)
             GP_con_2[igp] = functools.partial(mistmatch_con, xk, GP_con[igp],
                                               cons_model[igp])  # partially evaluating a function
             GP_con_f[igp] = {'type': 'ineq', 'fun': GP_con_2[igp]}
@@ -880,8 +902,10 @@ class ITR_GP_RTO:
             if np.min(localval) == np.inf:
                 print('warming, no feasible solution found')
             # selecting best point
-            minindex = np.argmin(localval)  # choosing best solution
-            xnew = localsol[minindex] + xk  # selecting best solution
+                xnew = xnew*(1+np.random.randn()*0.01)
+            else:
+                minindex = np.argmin(localval)  # choosing best solution
+                xnew = localsol[minindex] + xk  # selecting best solution
             # print(localval)
             # re-evaluate best point (could be done more efficiently - no re-evaluation)
             xnew = np.array([xnew]).reshape(1, ndim)

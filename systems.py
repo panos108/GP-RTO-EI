@@ -142,6 +142,22 @@ class WO_system:
 
         return obj
 
+    def WO_obj_sys_ca_noise_less(self, u):
+        x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
+        Fb = u[0]
+        Tr = u[1]
+        Fa = 1.8275
+        Fr = Fa + Fb
+
+        obj = -(1043.38 * x[4] * Fr +
+                20.92 * x[3] * Fr -
+                79.23 * Fa -
+                118.34 * Fb)# + 0.5*np.random.normal(0., 1)
+
+        return obj
+
+
+
     def WO_con1_sys_ca(self, u):
         x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
         pcon1 = x[0] - 0.12   + 5e-4*np.random.normal(0., 1)
