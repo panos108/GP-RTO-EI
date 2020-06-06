@@ -1,0 +1,176 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle
+import time
+import random
+import numpy as np
+import numpy.random as rnd
+from scipy.spatial.distance import cdist
+
+import sobol_seq
+from scipy.optimize import minimize
+from scipy.optimize import broyden1
+from scipy import linalg
+import scipy
+import matplotlib.pyplot as plt
+import functools
+from matplotlib.patches import Ellipse
+
+from casadi import *
+from utilities import *
+from systems import *
+
+csfont = {'fontname': 'Times New Roman'}
+
+#plt.rcParams['font.sans-serif'] = "Arial"
+plt.rcParams['font.family'] = "Times New Roman"
+
+#grid_shape = (1, 2)
+# fig = plt.figure()
+ft = int(20)
+font = {'size': ft}
+plt.rc('font', **font)
+plt.rc('text', usetex=True)
+params = {'legend.fontsize': 15,
+          'legend.handlelength': 2}
+plt.rcParams.update(params)
+
+
+#
+X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc = \
+     pickle.load(open('with_prior_with_exploration_EI_simple.p','rb'))
+#
+n = 20
+ni = 20
+for i in range(n):
+        plt.plot(np.linspace(1,ni,ni), np.array(TR_l_mc[i])[:ni].T,
+                 color='#255E69',alpha = 1.)
+plt.xlabel('RTO-iter')
+plt.ylabel('Trust region radius')
+plt.tick_params(right= True,top= True,left= True, bottom= True)
+plt.tick_params(axis="y",direction="in")
+plt.tick_params(axis="x",direction="in")
+plt.tight_layout()
+plt.savefig('TR_prob.png')
+plt.close()
+
+model = WO_model()
+plant = WO_system()
+
+obj_model = model.WO_obj_ca
+cons_model = [model.WO_con1_model_ca, model.WO_con2_model_ca]
+obj_system = plant.WO_obj_sys_ca_noise_less
+cons_system = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
+
+n_iter = 40
+bounds = [[4., 7.], [70., 100.]]
+Xtrain = np.array([[5.7, 74.], [6.35, 74.9], [6.6, 75.], [6.75, 79.]])  # U0
+samples_number = Xtrain.shape[0]
+data = ['data0', Xtrain]
+u0 = np.array([6.9, 83])
+
+Delta0 = 0.25
+Delta_max = 0.7;
+eta0 = 0.2;
+eta1 = 0.8;
+gamma_red = 0.8;
+gamma_incr = 1.2;
+TR_scaling_ = False
+TR_curvature_ = False
+inner_TR_ = False
+
+# Plot a sin curve using the x and y axes.
+n_points = 40
+u_1 = np.linspace(4., 7., n_points)
+u_2 = np.linspace(70., 100., n_points)
+
+# --- plotting functions --- #
+plant_f_grid = np.zeros((n_points, n_points))  # f_copy
+for u1i in range(len(u_1)):
+    for u2i in range(len(u_2)):
+        try:
+            plant_f_grid[u1i, u2i] = obj_system(np.array([u_1[u1i], u_2[u2i]]))
+        except:
+            print('point ', (u1i, u2i), ' failed')
+
+plant_f_grid = plant_f_grid.T
+# normalizing plot
+np_bounds = np.array(bounds)
+np_diff_bounds = np_bounds[:, 1] - np_bounds[:, 0]
+u_1 = np.linspace(4., 7., n_points)
+u_2 = np.linspace(70., 100., n_points)
+# --- constraints mapping manually set (lazyness) --- #
+g1 = [[4.0000, 4.1000, 4.2000, 4.3000, 4.4000, 4.5000, 4.6000, 4.7000, 4.8000, 4.9000, \
+       5.0000, 5.1000, 5.2000, 5.3000, 5.4000, 5.5000, 5.6000, 5.7000, 5.8000, 5.9000, 6.0000, \
+       6.1000, 6.2000, 6.3000, 6.4000, 6.5000, 6.6000, 6.7000, 6.8000, 6.9000, 7.0000], \
+      [83.8649, 82.9378, 82.0562, 81.2152, 80.4109, 79.6398, 78.8988, 78.1846, 77.4959, \
+       76.8299, 76.1849, 75.5589, 74.9507, 74.3586, 73.7814, 73.2178, 72.6674, 72.1277, \
+       71.5987, 71.0793, 70.5673, 70.0665, 69.5730, 69.0863, 68.6056, 68.1305, 67.6604, \
+       67.1943, 66.7337, 66.2754, 65.8211]]
+g2 = [[4.0000, 4.1000, 4.2000, 4.3000, 4.4000, 4.5000, 4.6000, 4.7000, 4.8000, 4.9000, \
+       5.0000, 5.1000, 5.2000, 5.3000, 5.4000, 5.5000, 5.6000, 5.7000, 5.8000, 5.9000, 6.0000, \
+       6.1000, 6.2000, 6.3000, 6.4000, 6.5000, 6.6000, 6.7000, 6.8000, 6.9000, 7.0000], \
+      [78.0170, 78.6381, 79.2771, 79.9189, 80.5635, 81.2110, 81.8619, 82.5181, 83.1687, \
+       83.8277, 84.4897, 85.1547, 85.8229, 86.4940, 87.1413, 87.8557, 88.5343, 89.2170, \
+       89.9037, 90.5943, 91.2896, 91.9891, 92.6930, 93.4017, 94.1155, 94.7974, 95.5153, \
+       96.2377, 96.9647, 97.6964, 98.4330]]
+
+# Contour plot
+# f_copy = f.reshape((n_points,n_points),order='F')
+
+samples_number = 4
+fig, ax = plt.subplots()
+CS = ax.contour(u_1, u_2, plant_f_grid, 50)
+ax.plot(g1[0]  , g1[1]  , 'black', linewidth=3)
+ax.plot(g2[0]  , g2[1]  , 'black', linewidth=3)
+for im in range(n):
+    ax.plot(X_opt_mc[im][samples_number:, 0]  ,
+            X_opt_mc[im][samples_number:, 1]  ,
+            color='#AA4339',alpha = .5, marker='o')
+    ax.plot(X_opt_mc[im][:samples_number, 0]  ,
+            X_opt_mc[im][:samples_number, 1]  ,
+            color='#255E69',alpha = .5, marker='o')
+    tr_bktrc = 0
+    for i in range(X_opt_mc[im][samples_number:, :].shape[0]):
+        if backtrack_1_mc[im][i] == False:
+            x_pos = X_opt_mc[im][samples_number + i, 0]
+            y_pos = X_opt_mc[im][samples_number + i, 1]
+            # plt.text(x_pos, y_pos, str(i))
+        if TR_scaling_:
+            if TR_curvature_:
+                print('Not implemented')
+                # e2 = Ellipse((x_pos, y_pos), TR_l_mc[im][i][0], TR_l_[im][i][1],
+                #              facecolor='None', edgecolor='black', angle=TR_l_angle[i], linestyle='--', linewidth=1)
+                # ax.add_patch(e2)
+            else:
+                e2 = Ellipse((x_pos, y_pos), TR_l_mc[im][i][0][0], TR_l_mc[im][i][1][0],
+                             facecolor='None', edgecolor='black', angle=0, linestyle='--', linewidth=1)
+                ax.add_patch(e2)
+        else:
+            2
+            # circle1 = plt.Circle((x_pos, y_pos), radius=TR_l_mc[im][i], color='black', fill=False, linestyle='--')
+            # ax.add_artist(circle1)
+for im in range(n):
+    ax.plot(xnew_mc[im][-5:, 0]  , xnew_mc[im][-5:, 1]  , 'ro')
+
+    # plt.axis([4.,7., 70.,100.])
+
+plt.xlabel(r'Mass Flowrate of B [kg s$^-1$]')
+plt.ylabel(r'Reactor Temperature [$^o$C]')
+plt.tick_params(right= True,top= True,left= True, bottom= True)
+plt.tick_params(axis="y",direction="in")
+plt.tick_params(axis="x",direction="in")
+plt.xlim(4,7)
+plt.ylim(70,100)
+plt.tight_layout()
+plt.savefig('Contour_prob.png')
+
+
+
+
+print('end')
+
+# plt.plot(x_test,mu,color='#255E69',alpha = 1.)
+# plt.fill_between(x_test,mu+4*np.sqrt(var), mu-4*np.sqrt(var),color='#255E69',alpha = 0.1)
+#
+# plt.fill_between(x_test,mu+3*np.sqrt(var), mu-3*np.sqrt(var),color='#255E69',alpha = 0.15)
