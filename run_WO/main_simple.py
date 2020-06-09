@@ -26,35 +26,32 @@ backtrack_1_mc = []
 
 for i in range(30):
 
-    model = WO_model()
-    plant = WO_system()
+    obj_model      = Benoit_Model
+    cons_model     = [con1_model]
+    obj_system     = Benoit_System
+    cons_system    = [con1_system_tight]
 
-    obj_model      = model.WO_obj_ca
-    cons_model     = [model.WO_con1_model_ca, model.WO_con2_model_ca]
-    obj_system     = plant.WO_obj_sys_ca
-    cons_system    = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
-
-
-    n_iter         = 40
-    bounds         = [[4.,7.],[70.,100.]]
-    Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+    n_iter = 20
+    bounds = [[-.6, 1.5], [-1., 1.]]
+    Xtrain = np.array([[1.2, 0.], [1.4, 0.1], [1.3, -0.1]])
     samples_number = Xtrain.shape[0]
-    data           = ['data0', Xtrain]
-    u0             = np.array([6.9,83])
+    data = ['data0', Xtrain]
+    u0 = np.array([1.1, -.1])
+    Delta0 = 0.25
 
-    Delta0         = 0.25
+
     Delta_max      =0.7; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
     TR_scaling_    = False
     TR_curvature_  = False
     inner_TR_      = False
-    noise = [0.5**2, 5e-8, 5e-8]
+    noise = None#[0.5**2, 5e-8, 5e-8]
 
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
                                     n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=30,
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
-                                    store_data=True, inner_TR=inner_TR_)
+                                    store_data=True, inner_TR=inner_TR_, scale_inputs=False)
 
     print('Episode: ',i)
     if not TR_curvature_:

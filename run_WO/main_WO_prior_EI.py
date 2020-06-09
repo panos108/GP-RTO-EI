@@ -35,9 +35,12 @@ for i in range(30):
     cons_system    = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
 
 
+
+
     n_iter         = 40
     bounds         = [[4.,7.],[70.,100.]]
     Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+    #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
     samples_number = Xtrain.shape[0]
     data           = ['data0', Xtrain]
     u0             = np.array([6.9,83])
@@ -47,14 +50,14 @@ for i in range(30):
     TR_scaling_    = False
     TR_curvature_  = False
     inner_TR_      = False
-    noise = [0.5**2, 5e-8, 5e-8]
+    noise = None#[0.5**2, 5e-8, 5e-8]
 
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
                                     n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=30,
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
-                                    store_data=True, inner_TR=inner_TR_)
+                                    store_data=True, inner_TR=inner_TR_, scale_inputs=True)
 
     print('Episode: ',i)
     if not TR_curvature_:

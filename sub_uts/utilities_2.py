@@ -146,9 +146,10 @@ class GP_model:
         invKopt = []
         # --- loop over outputs (GPs) --- #
         for i in range(ny_dim):
-            if noise[i]>0 :
-                lb[-1] = np.log(noise[i]/self.Y_std[i]**2)*0.5
-                ub[-1] = np.log(noise[i]/self.Y_std[i]**2)*0.5
+            if not(np.array([noise]).reshape((-1,))[i]==None):
+                noise = np.array([noise]).reshape((-1,))
+                lb[-1] = np.log(noise[i]/self.Y_std[i]**2)*0.5-0.001
+                ub[-1] = np.log(noise[i]/self.Y_std[i]**2)*0.5+0.001
                 bounds = np.hstack((lb.reshape(nx_dim + 2, 1),
                                     ub.reshape(nx_dim + 2, 1)))
             # --- multistart loop --- #
@@ -284,7 +285,7 @@ class ITR_GP_RTO:
     def __init__(self, obj_model, obj_system, cons_model, cons_system, x0,
                  Delta0, Delta_max, eta0, eta1, gamma_red, gamma_incr,
                  n_iter, data, bounds, obj_setting=2, noise=None, multi_opt=5, multi_hyper=10, TR_scaling=True,
-                 TR_curvature=True, store_data=True, inner_TR=False):
+                 TR_curvature=True, store_data=True, inner_TR=False, scale_inputs=False):
         '''
         data = ['int', bound_list=[[0,10],[-5,5],[3,8]], samples_number] <=> d = ['int', np.array([[-12, 8]]), 3]
         data = ['data0', Xtrain]
@@ -304,11 +305,16 @@ class ITR_GP_RTO:
         self.Delta_max, self.eta0, self.eta1 = Delta_max, eta0, eta1
         self.gamma_red, self.gamma_incr = gamma_red, gamma_incr
         self.inner_TR = inner_TR
-
+        self.scale_inputs = scale_inputs
         # other definitions
-        self.TRmat = np.linalg.inv(np.diag(bounds[:, 1] - bounds[:, 0]))
+        if scale_inputs:
+            self.TRmat = np.linalg.inv(np.diag(bounds[:, 1] - bounds[:, 0]))
+        else:
+            self.TRmat = np.eye(len(x0))
 
         self.ng = len(cons_model)
+        if noise ==None:
+            self.noise = [None]*self.ng
         self.Delta0 = Delta0
         # data creating
         self.Xtrain, self.ytrain = self.data_handling()
@@ -601,7 +607,8 @@ class ITR_GP_RTO:
             Delta0 = Delta0 * gamma_red
             self.backtrack_l[i_rto] = True
             print('plant_iplus<plant_i -- backtracking')
-
+        # if Delta0<0.1:
+        #     Delta0 = 0.1
         return Delta0, xnew, xk
 
     ###################################
@@ -635,7 +642,7 @@ class ITR_GP_RTO:
         Gamma_Threshold = 0.99  # 9.2103
         S = np.linalg.inv(self.TRmat) * self.Delta0 ** 2
         z_hat = np.zeros(ndim)
-        m_FA = 100
+        m_FA = 200
         nz = ndim
         z_hat = z_hat.reshape(nz, 1)
 
@@ -655,7 +662,7 @@ class ITR_GP_RTO:
 
         # Translation and scaling about the center
         z_fa = (unif_ell * np.sqrt(Gamma_Threshold) + (z_hat * np.ones((1, m_FA))))
-        for i in range(100):
+        for i in range(200):
             if self.TR_con(z_fa[:, i].reshape((1, -1))) >= 0:
                 d_init = z_fa[:, i]
                 break
@@ -698,7 +705,12 @@ class ITR_GP_RTO:
             xnew = xk
             self.backtrack_l[i_rto] = True
             print('Constraint violated -- backtracking')
-            return Delta0 * self.gamma_red, xnew, xk
+            Delta0 = Delta0 * self.gamma_red
+
+            # if Delta0 < 0.1:
+            #     Delta0 = 0.1
+
+            return Delta0 , xnew, xk
 
         else:
             Delta0, xnew, xk = Adjust_TR(Delta0, xk, xnew, GP_obj, i_rto)
@@ -886,11 +898,12 @@ class ITR_GP_RTO:
             TRb = (bounds - xk.reshape(ndim, 1, order='F'))
             # TODO: sampling on ellipse, not only Ball
             for j in range(multi_opt):
-                if TR_curvature:
+                if TR_curvature or self.scale_inputs:
                     # d_init = Ellipse_sampling(ndim)
-                    d_init = Ball_sampling(ndim)
+                    d_init = self.Ellipse_sampling(ndim)
                 else:
-                    d_init = Ball_sampling(ndim)  # random sampling in a ball
+                    d_init = self.Ball_sampling(ndim)  # random sampling in a ball
+
                 # GP optimization
                 res = minimize(GP_obj_f, d_init, args=(GP_obj, xk), method='SLSQP',
                                options=options, bounds=(TRb), constraints=GP_con_f, tol=1e-12)
@@ -901,9 +914,12 @@ class ITR_GP_RTO:
                     localval[j] = np.inf
             if np.min(localval) == np.inf:
                 print('warming, no feasible solution found')
+
+                xnew = xk*(1+0.01*np.random.randn())  # selecting best solution
+            else:
             # selecting best point
-            minindex = np.argmin(localval)  # choosing best solution
-            xnew = localsol[minindex] + xk  # selecting best solution
+                minindex = np.argmin(localval)  # choosing best solution
+                xnew = localsol[minindex] + xk  # selecting best solution
 
             # re-evaluate best point (could be done more efficiently - no re-evaluation)
             xnew = np.array([xnew]).reshape(1, ndim)

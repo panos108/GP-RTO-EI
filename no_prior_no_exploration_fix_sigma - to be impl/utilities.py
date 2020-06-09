@@ -292,7 +292,6 @@ class ITR_GP_RTO:
         self.inner_TR = inner_TR
 
         # other definitions
-        self.TRmat = np.linalg.inv(np.diag(bounds[:, 1] - bounds[:, 0]))
         self.ng = len(cons_model)
         self.Delta0 = Delta0
         # data creating

@@ -14,8 +14,8 @@ import functools
 from matplotlib.patches import Ellipse
 
 from casadi import *
-from utilities import *
-from systems import *
+from sub_uts.utilities_2 import *
+from sub_uts.systems import *
 
 np.random.seed(0)
 X_opt_mc = []
@@ -47,10 +47,12 @@ for i in range(30):
     TR_scaling_    = False
     TR_curvature_  = False
     inner_TR_      = False
+    noise = [0.5**2, 5e-8, 5e-8]
+
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
-                                    n_iter, data, np.array(bounds), multi_opt=30,
+                                    n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=30,
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_)
 
