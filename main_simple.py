@@ -22,7 +22,18 @@ if not(os.path.exists('figs')):
     os.mkdir('figs')
 if not(os.path.exists('figs_noise')):
     os.mkdir('figs_noise')
-
+# Plot_simple('no_prior_with_exploration_ei')
+# Plot_simple('with_prior_with_exploration_ei')
+# Plot_simple('with_prior_with_exploration_ei_noise')
+# Plot_simple('no_prior_with_exploration_ei_noise')
+# Plot_simple('no_prior_with_exploration_ucb')
+# Plot_simple('with_prior_with_exploration_ucb')
+# Plot_simple('with_prior_with_exploration_ucb_noise')
+# Plot_simple('no_prior_with_exploration_ucb_noise')
+# Plot_simple('no_prior_no_exploration')
+# Plot_simple('with_prior_no_exploration')
+# Plot_simple('with_prior_no_exploration_noise')
+# Plot_simple('no_prior_no_exploration_noise')
 
 # plot_obj()
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#
@@ -776,5 +787,6 @@ obj_no_prior_no_exploration               = compute_obj_simple('no_prior_no_expl
 obj_with_prior_no_exploration             = compute_obj_simple('with_prior_no_exploration')
 obj_with_prior_no_exploration_noise       = compute_obj_simple('with_prior_no_exploration_noise')
 obj_no_prior_no_exploration_noise         = compute_obj_simple('no_prior_no_exploration_noise')
+
 
 

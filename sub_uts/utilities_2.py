@@ -129,7 +129,7 @@ class GP_model:
         Cov_mat = self.Cov_mat
 
         lb = np.array([-5.] * (nx_dim + 1) + [-8.])  # lb on parameters (this is inside the exponential)
-        ub = np.array([7.] * (nx_dim + 1) + [-4.])  # lb on parameters (this is inside the exponential)
+        ub = np.array([5.] * (nx_dim + 1) + [-4.])  # lb on parameters (this is inside the exponential)
 
 
 
