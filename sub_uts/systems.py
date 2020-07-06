@@ -807,11 +807,11 @@ class Comp_system:
     c1   = 9.66e-3
 
     def __init__(self, map_pi, map_eta):
-        self.xd, self.xa, self.u, self.ODEeq, self.Aeq, self.states, self.algebraics, self.inputs = self.DAE_system()
-        self.eval = self.integrator_system()
-        self.map_pi, self.map_eta = map_pi, map_eta
+        # self.xd, self.xa, self.u, self.ODEeq, self.Aeq, self.states, self.algebraics, self.inputs = self.DAE_system()
+        self.eval1 = self.integrator_system(map_pi[0], map_eta[0])
+        self.eval2 = self.integrator_system(map_pi[1], map_eta[1])
 
-    def DAE_system(self):
+    def DAE_system(self, map_pi, map_eta):
         # Define vectors with names of states
         states = ['x']
         nd = len(states)
@@ -844,8 +844,8 @@ class Comp_system:
         Vrec_min = 0e0
         Vrec_max= 10.
 
-        Vrec = Vrec_norm * (Vrec_max-Vrec_min) +  Vrec_min
-        W = W_norm * (W_max-W_min) +  W_min
+        Vrec = Vrec_norm * (Vrec_max-Vrec_min) + Vrec_min
+        W    = W_norm * (W_max-W_min) + W_min
 
         Aeq = []
 
@@ -855,71 +855,81 @@ class Comp_system:
         Aeq += [Mout - Min]
         Aeq += [Mc - Min - Mrec]
         Aeq += [Pd - PI * Ps]
-        Aeq += [PI - self.map_pi(Mc, W)]
-        Aeq += [Ep - self.map_eta(Mc, PI)]
+        Aeq += [PI - map_pi(Mc, W)]
+        Aeq += [Ep - map_eta(Mc, PI)]
         Aeq += [Yp - ((Zin * R * Tin) / MW) * (nv / (nv - 1)) * (
-                    pow(PI, (nv - 1) / nv) - 1) ]
-        Aeq += [P * Ep - Yp * Mc ]
+                    pow(PI, (nv - 1) / nv) - 1)]
+        Aeq += [P * Ep - Yp * Mc]
 
         return xd, xa, u, ODEeq, Aeq, states, algebraics, inputs
 
-    def integrator_system(self):
+    def integrator_system(self, map_pi, map_eta):
         """
         This function constructs the integrator to be suitable with casadi environment, for the equations of the model
         and the objective function with variable time step.
         inputs: NaN
         outputs: F: Function([x, u, dt]--> [xf, obj])
         """
-        xd, xa, u, ODEeq, Aeq, states, algebraics, inputs = self.DAE_system()
+        xd, xa, u, ODEeq, Aeq, states, algebraics, inputs = self.DAE_system(map_pi, map_eta)
         VV = Function('vfcn', [xa, u], [vertcat(*Aeq)], ['w0', 'u'], ['w'])
         solver = rootfinder('solver', 'newton', VV)
 
         return solver
 
-    def solve_comp(self, u):
-        x = self.eval(np.array([*[250]*4, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x = x
-        return x
+    def obj_sys_ca(self, u):
 
-    def WO_obj_sys_ca(self, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x2 = x2
 
-
-        x = self.eval(np.array([*[250]*4, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x = x
-        Fb = u[0]
-        Tr = u[1]
-        Fa = 1.8275
-        Fr = Fa + Fb
-
-        obj = -(1043.38 * x[4] * Fr +
-                20.92 * x[3] * Fr -
-                79.23 * Fa -
-                118.34 * Fb) + 0.5 * np.random.normal(0., 1)
+        obj = -(x1+x2) + 0.5 * np.random.normal(0., 1)
 
         return obj
 
-    def WO_obj_sys_ca_noise_less(self, u):
-        x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
-        Fb = u[0]
-        Tr = u[1]
-        Fa = 1.8275
-        Fr = Fa + Fb
+    def obj_sys_ca_noise_less(self, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x1 = x1
+        self.x2 = x2
 
-        obj = -(1043.38 * x[4] * Fr +
-                20.92 * x[3] * Fr -
-                79.23 * Fa -
-                118.34 * Fb)  # + 0.5*np.random.normal(0., 1)
+        obj = -(x1+x2) 
 
         return obj
 
-    def WO_con1_sys_ca(self, u):
-        x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
+    def con1_sys_ca(self, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x2 = x2
         pcon1 = x[0] - 0.12 + 5e-4 * np.random.normal(0., 1)
 
         return -pcon1.toarray()[0]
 
-    def WO_con2_sys_ca(self, u):
-        x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
+    def con2_sys_ca(self, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x2 = x2  
+        pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
+
+        return -pcon2.toarray()[0]
+        
+    def equality_sys_ca(self, ref, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x2 = x2  
+        pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
+
+        return -pcon2.toarray()[0]
+    
+    def compliment_sys_ca(self, u):
+        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x1 = x1
+        self.x2 = x2  
         pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
 
         return -pcon2.toarray()[0]
