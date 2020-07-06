@@ -827,7 +827,7 @@ class Comp_system:
         for i in range(na):
             globals()[algebraics[i]] = xa[i]
 
-        inputs = ['W', 'Vrec']
+        inputs = ['W_norm', 'Vrec_norm']
         nu = len(inputs)
         u = SX.sym("u", nu)
         for i in range(nu):
@@ -837,15 +837,15 @@ class Comp_system:
 
         ODEeq = [0 * x]
 
-
         # Declare algebraic equations
 
         W_min = 1e1
         W_max =1e2
         Vrec_min = 0e0
-        Vrec_max= 10
+        Vrec_max= 10.
 
-        Vre =
+        Vrec = Vrec_norm * (Vrec_max-Vrec_min) +  Vrec_min
+        W = W_norm * (W_max-W_min) +  W_min
 
         Aeq = []
 
@@ -870,15 +870,22 @@ class Comp_system:
         inputs: NaN
         outputs: F: Function([x, u, dt]--> [xf, obj])
         """
-
         xd, xa, u, ODEeq, Aeq, states, algebraics, inputs = self.DAE_system()
         VV = Function('vfcn', [xa, u], [vertcat(*Aeq)], ['w0', 'u'], ['w'])
         solver = rootfinder('solver', 'newton', VV)
 
         return solver
 
+    def solve_comp(self, u):
+        x = self.eval(np.array([*[250]*4, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x = x
+        return x
+
     def WO_obj_sys_ca(self, u):
-        x = self.eval(np.array([0.114805, 0.525604, 0.0260265, 0.207296, 0.0923376, 0.0339309]), u)
+
+
+        x = self.eval(np.array([*[250]*4, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        self.x = x
         Fb = u[0]
         Tr = u[1]
         Fa = 1.8275
