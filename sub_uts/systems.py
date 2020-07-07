@@ -791,7 +791,7 @@ def WO_con2_sys_ca(u):
 
 class Comp_system:
     # Parameters
-    R    = 8.314e-3 #  Power in MW
+    R    = 8.314e-3
     MW   = 16.04e0
     Zin  = 0.90e0
     Tin  = 293e0
@@ -849,7 +849,7 @@ class Comp_system:
 
         Aeq = []
 
-        Aeq += [sqrt(Min / kin) - (Pin - Ps) ]
+        Aeq += [sqrt(Min / kin) - (Pin - Ps)]
         Aeq += [sqrt(Mout / kout) - (Pd - Pout)]
         Aeq += [sqrt(Mrec / krec) - sqrt(Vrec) * (Pd - Ps)]
         Aeq += [Mout - Min]
@@ -857,9 +857,8 @@ class Comp_system:
         Aeq += [Pd - PI * Ps]
         Aeq += [PI - self.map_pi(Mc, W)]
         Aeq += [Ep - self.map_eta(Mc, PI)]
-        Aeq += [Yp - ((Zin * R * Tin) / MW) * (nv / (nv - 1)) * (
-                    pow(PI, (nv - 1) / nv) - 1) ]
-        Aeq += [P * Ep - Yp * Mc ]
+        Aeq += [Yp - ((Zin * R * Tin) / MW) * (nv / (nv - 1)) * (pow(PI, (nv - 1) / nv) - 1)]
+        Aeq += [P * Ep - Yp * Mc]
 
         return xd, xa, u, ODEeq, Aeq, states, algebraics, inputs
 
