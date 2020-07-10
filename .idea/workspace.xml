@@ -10,11 +10,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1380">
-              <caret line="91" column="21" selection-start-line="91" selection-start-column="21" selection-end-line="91" selection-end-column="21" />
+            <state relative-caret-position="168">
+              <caret line="66" selection-start-line="66" selection-end-line="66" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -25,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14020">
-              <caret line="926" column="36" selection-start-line="926" selection-start-column="36" selection-end-line="926" selection-end-column="36" />
+            <state relative-caret-position="41">
+              <caret line="550" column="30" selection-start-line="550" selection-start-column="30" selection-end-line="550" selection-end-column="30" />
               <folding>
                 <element signature="e#639#8570#0" />
                 <element signature="e#8725#9316#0" />
@@ -38,7 +38,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_simple/main_simple.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
+            <state relative-caret-position="-279">
               <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -47,12 +47,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="811" column="39" selection-start-line="811" selection-start-column="39" selection-end-line="811" selection-end-column="39" />
+            <state relative-caret-position="195">
+              <caret line="843" column="38" selection-start-line="843" selection-start-column="29" selection-end-line="843" selection-end-column="38" />
               <folding>
+                <element signature="e#1515#6013#0" />
                 <element signature="e#9113#9135#0" />
                 <element signature="e#9160#9179#0" />
                 <element signature="e#9182#9183#0" />
@@ -75,7 +76,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plots_RTO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8820">
+            <state relative-caret-position="261">
               <caret line="461" column="45" selection-start-line="461" selection-start-column="45" selection-end-line="461" selection-end-column="45" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
@@ -95,13 +96,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>no_prior_no_exploration</find>
-      <find>no_prior_with_exploration_ei_noise</find>
-      <find>no_p</find>
       <find>open</find>
       <find>model.WO_obj_ca</find>
       <find>model.WO_con1_model_ca, model.WO_con2_model_ca</find>
-      <find>n_iter</find>
       <find>n_iter</find>
       <find>obj_setting</find>
       <find>self.obj</find>
@@ -112,7 +109,6 @@
       <find>ca_</find>
       <find>scale_inputs=True</find>
       <find>benoir</find>
-      <find>sqrt</find>
       <find>29</find>
       <find>samples_</find>
       <find>backtr</find>
@@ -124,7 +120,12 @@
       <find>[6.</find>
       <find>EXplore_n</find>
       <find>noise = [0.5**2, 5e-8, 5e-8]</find>
-      <find>self.obj</find>
+      <find>ineq</find>
+      <find>tool</find>
+      <find>sqrt</find>
+      <find>c1o</find>
+      <find>map_pi</find>
+      <find>Inner_TR_con</find>
     </findStrings>
     <replaceStrings>
       <replace>Benoit_Model</replace>
@@ -148,16 +149,16 @@
         <option value="$PROJECT_DIR$/with_prior_with_exploration/utilities.py" />
         <option value="$PROJECT_DIR$/sub_uts/utilities_2.py" />
         <option value="$PROJECT_DIR$/utilities_2.py" />
-        <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
         <option value="$PROJECT_DIR$/plots_RTO.py" />
         <option value="$PROJECT_DIR$/run_WO/main_simple.py" />
         <option value="$PROJECT_DIR$/run_simple/main_simple.py" />
         <option value="$PROJECT_DIR$/sub_uts/systems.py" />
+        <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="420" />
+    <option name="x" value="948" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
   </component>
@@ -186,6 +187,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Leeds_working_space - ss - Exp - BO - TR" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -206,7 +208,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="main_simple" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="main_WO_prior_EI" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="gp-rto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -214,11 +216,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\Panos\Anaconda3\envs\trial\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run_simple" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run_WO" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_simple/main_simple.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -252,14 +254,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2494043" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15806195" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.5319149" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.38120568" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32978722" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.3067376" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32978722" />
@@ -282,20 +285,121 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>836</line>
+          <line>796</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>30</line>
-          <option name="timeStamp" value="56" />
+          <line>73</line>
+          <option name="timeStamp" value="71" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>94</line>
-          <option name="timeStamp" value="58" />
+          <line>68</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="332" selection-start-line="332" selection-end-line="332" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../Sensitivity analysis QM/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="56" column="78" lean-forward="true" selection-start-line="56" selection-start-column="78" selection-end-line="56" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plots_RTO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="461" column="45" selection-start-line="461" selection-start-column="45" selection-end-line="461" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../Sensitivity analysis QM/utilities.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="749" column="7" selection-start-line="749" selection-start-column="4" selection-end-line="749" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="41">
+          <caret line="550" column="30" selection-start-line="550" selection-start-column="30" selection-end-line="550" selection-end-column="30" />
+          <folding>
+            <element signature="e#639#8570#0" />
+            <element signature="e#8725#9316#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_simple/main_simple.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-279">
+          <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/casadi/casadi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="12213" selection-start-line="12213" selection-end-line="12213" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="843" column="38" selection-start-line="843" selection-start-column="29" selection-end-line="843" selection-end-column="38" />
+          <folding>
+            <element signature="e#1515#6013#0" />
+            <element signature="e#9113#9135#0" />
+            <element signature="e#9160#9179#0" />
+            <element signature="e#9182#9183#0" />
+            <element signature="e#15339#16088#0" />
+            <element signature="e#16168#16904#0" />
+            <element signature="e#16963#17359#0" />
+            <element signature="e#17414#17638#0" />
+            <element signature="e#17701#17952#0" />
+            <element signature="e#18007#18231#0" />
+            <element signature="e#18294#18561#0" />
+            <element signature="e#18736#20347#0" />
+            <element signature="e#20379#20836#0" />
+            <element signature="e#20865#21118#0" />
+            <element signature="e#21148#21297#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="66" selection-start-line="66" selection-end-line="66" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>

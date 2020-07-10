@@ -23,74 +23,14 @@ import pickle
 from plots_RTO import Plot
 #----------1) EI-NO PRIOR-UNKNOWN NOISE----------#
 #---------------------------------------------#
-if not(os.path.exists('figs_WO')):
-    os.mkdir('figs_WO')
-if not(os.path.exists('figs_noise_WO')):
-    os.mkdir('figs_noise_WO')
+# if not(os.path.exists('figs_WO')):
+#     os.mkdir('figs_WO')
+# if not(os.path.exists('figs_noise_WO')):
+#     os.mkdir('figs_noise_WO')
 
-# obj_no_prior_with_exploration_ei          = compute_obj('no_prior_with_exploration_ei')
-# obj_with_prior_with_exploration_ei        = compute_obj('with_prior_with_exploration_ei')
-# obj_with_prior_with_exploration_ei_noise  = compute_obj('with_prior_with_exploration_ei_noise')
-# obj_no_prior_with_exploration_ei_noise    = compute_obj('no_prior_with_exploration_ei_noise')
-# obj_no_prior_with_exploration_ucb         = compute_obj('no_prior_with_exploration_ucb')
-# obj_with_prior_with_exploration_ucb       = compute_obj('with_prior_with_exploration_ucb')
-# obj_with_prior_with_exploration_ucb_noise = compute_obj('with_prior_with_exploration_ucb_noise')
-# obj_no_prior_with_exploration_ucb_noise   = compute_obj('no_prior_with_exploration_ucb_noise')
-# obj_no_prior_no_exploration               = compute_obj('no_prior_no_exploration')
-# obj_with_prior_no_exploration             = compute_obj('with_prior_no_exploration')
-# obj_with_prior_no_exploration_noise       = compute_obj('with_prior_no_exploration_noise')
-# obj_no_prior_no_exploration_noise         = compute_obj('no_prior_no_exploration_noise')
-#
-# data = [obj_no_prior_with_exploration_ei[-1],
-#         obj_with_prior_with_exploration_ei[-1],
-#         obj_with_prior_with_exploration_ei_noise[-1],
-#         obj_no_prior_with_exploration_ei_noise[-1],
-#         obj_no_prior_with_exploration_ucb[-1],
-#         obj_with_prior_with_exploration_ucb[-1],
-#         obj_with_prior_with_exploration_ucb_noise[-1],
-#         obj_no_prior_with_exploration_ucb_noise[-1],
-#         obj_no_prior_no_exploration[-1],
-#         obj_with_prior_no_exploration[-1],
-#         obj_with_prior_no_exploration_noise[-1],
-#         obj_no_prior_no_exploration_noise[-1]]
-# ni = 20
-# for i,obj_ in enumerate(data):
-#     obj_mean = obj_.mean(axis=0)
-#     obj_max = obj_.max(axis=0)
-#     obj_min = obj_.min(axis=0)
-#     plt.errorbar(np.linspace(1, ni, ni), obj_mean, yerr=[obj_mean - obj_min, obj_max - obj_mean],
-#              alpha=1.)
-# #
-# # plt.plot(np.linspace(1, ni, ni), obj_max,
-# #              color='#255E69', alpha=1.)
-# #
-# # plt.plot(np.linspace(1, ni, ni), obj_min,
-# #              color='#255E69', alpha=1.)
-# # plt.plot(np.linspace(1, ni, ni), [obj_max.max()]*ni,
-# #              color='#255E69', alpha=1.)
-# plt.xlabel('RTO-iter')
-# plt.ylabel('Objective')
-# plt.tick_params(right=True, top=True, left=True, bottom=True)
-# plt.tick_params(axis="y", direction="in")
-# plt.tick_params(axis="x", direction="in")
-# plt.tight_layout()
-# plt.savefig('obj.png', dpi=400)
-# plt.close()
 
-# Plot('no_prior_with_exploration_ei')
-# Plot('with_prior_with_exploration_ei')
-# Plot('with_prior_with_exploration_ei_noise')
-# Plot('no_prior_with_exploration_ei_noise')
-# Plot('no_prior_with_exploration_ucb')
-# Plot('with_prior_with_exploration_ucb')
-# Plot('with_prior_with_exploration_ucb_noise')
-# Plot('no_prior_with_exploration_ucb_noise')
-# Plot('no_prior_no_exploration')
-# Plot('with_prior_no_exploration')
-# Plot('with_prior_no_exploration_noise')
-# Plot('no_prior_no_exploration_noise')
-plot_obj(compute_obj)
-plot_obj_noise(compute_obj)
+# plot_obj(compute_obj)
+# plot_obj_noise(compute_obj)
 
 np.random.seed(0)
 X_opt_mc = []
@@ -99,20 +39,40 @@ TR_l_mc = []
 xnew_mc = []
 backtrack_1_mc = []
 
+mapA_a = np.array([2.6909e+00, -1.3878e-02, -4.0926e-02, 9.8696e-04, -4.1858e-04,  2.4528e-05])
+mapA_b = np.array([5.9193e-01, -2.1319e-03,  2.9338e-01,  2.9788e-03, -2.6030e-05, -1.1791e-01])
+mapB_a = np.array([2.6909e+00*1.05, -1.3878e-02*1.05, -4.0926e-02*1.05,
+                      9.8696e-04, -4.1858e-04,  2.4528e-05 ])
+mapB_b = np.array([5.9193e-01, -2.1319e-03*1.05,  2.9338e-01*0.95,
+                      2.9788e-03*1.05, -2.6030e-05*1.05, -1.1791e-01*1.05])
+mapC_a = np.array([2.6909e+00, -1.3878e-02, -4.0926e-02,
+                      9.8696e-04, -4.1858e-04*1.1,  2.4528e-05])
+mapC_b = np.array([5.9193e-01*0.95, -2.1319e-03*1.05,  2.9338e-01,
+                      2.9788e-03*0.95, -2.6030e-05, -1.1791e-01*0.95])
+mapM_a = np.array([2.6909e+00*1.05, -1.3878e-02*1.05, -4.0926e-02*1.05,
+                      9.8696e-04*1.05, -4.1858e-04*1.05,  2.4528e-05*1.05])
+mapM_b = np.array([5.9193e-01*1.05, -2.1319e-03*1.05,  2.9338e-01*1.05,
+                      2.9788e-03*1.05, -2.6030e-05*1.05, -1.1791e-01*1.05])
+
+map_model_a = np.vstack((mapM_a,mapM_a))#,mapM_a))
+map_model_b = np.vstack((mapM_b,mapM_b))#,mapM_b))
+
+map_plant_a = np.vstack((mapA_a,mapB_a))#,mapC_a))
+map_plant_b = np.vstack((mapA_b,mapB_b))#,mapC_b))
+
 for i in range(30):
 
-    plant = WO_system()
-
-    obj_model      = obj_empty#model.WO_obj_ca
-    cons_model     = [con_empty, con_empty]
-    obj_system     = plant.WO_obj_sys_ca
-    cons_system    = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
+    plant = Comp_system(map_plant_a, map_plant_b)
+    model = Comp_system(map_model_a, map_model_b)
 
 
-
+    obj_model      = model.obj_sys_ca#model.WO_obj_ca
+    cons_model     = [model.con11_sys_ca, model.con12_sys_ca, model.con21_sys_ca, model.con22_sys_ca]
+    obj_system = plant.obj_sys_ca  # model.WO_obj_ca
+    cons_system = [plant.con11_sys_ca, plant.con12_sys_ca, plant.con21_sys_ca, plant.con22_sys_ca]
 
     n_iter         = 20
-    bounds         = [[4.,7.],[70.,100.]]
+    bounds         = [[0.,0.],[1.,1.]]
     Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
     #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
     samples_number = Xtrain.shape[0]
