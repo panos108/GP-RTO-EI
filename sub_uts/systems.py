@@ -788,30 +788,43 @@ def WO_con2_sys_ca(u):
     return -pcon2.toarray()[0]
 
 
-
 class Comp_system:
     # Parameters
-    R    = 8.314e-3 #  Power in MW
-    MW   = 16.04e0
-    Zin  = 0.90e0
-    Tin  = 293e0
-    nv   = 1.27e0
-    Pin  = 1.05e5
-    Pout = 1.55e5
-    kin  = 2.2627e0
-    kout = 0.9410e0
-    krec = 0.4238e0
-    s0   = -6.64e-1
-    s1   = 3.81e-2
-    c0   = 3.41e-1
-    c1   = 9.66e-3
 
-    def __init__(self, map_pi, map_eta):
+
+    def __init__(self, a, b):
         # self.xd, self.xa, self.u, self.ODEeq, self.Aeq, self.states, self.algebraics, self.inputs = self.DAE_system()
-        self.eval1 = self.integrator_system(map_pi[0], map_eta[0])
-        self.eval2 = self.integrator_system(map_pi[1], map_eta[1])
 
-    def DAE_system(self, map_pi, map_eta):
+        self.N_c  = np.shape(a)[0] # Number of compressors
+        self.eval = []
+        self.R    = 8.314e-3  # Power in MW
+        self.MW   = 16.04e0
+        self.Zin  = 0.90e0
+        self.Tin  = 293e0
+        self.nv   = 1.27e0
+        self.Pin  = 1.05e5
+        self.Pout = 1.55e5
+        self.kin  = 2.2627e0
+        self.kout = 0.9410e0
+        self.krec = 0.4238e0
+        self.s0   = -6.64e-1
+        self.s1   = 3.81e-2
+        self.c0   = 3.41e-1
+        self.c1   = 9.66e-3
+        for i in range(self.N_c):
+            self.eval += [self.integrator_system(a[i], b[i])]
+        print(self.map_pi(a[0], 80, 39))
+
+    def map_pi(self, a, Mc, W):
+        return a[0] + a[1] * W + a[2] * Mc + a[3] * Mc * W + a[4] * (W)**2 + a[5] * (Mc)**2
+#a[0] + a[1] * Mc + a[2] * W + a[3] * Mc * W + a[4] * (Mc)**2 + a[5] * (W)**2
+    def map_pi1(self, a, Mc, W):
+        return a[0] + a[1] * Mc + a[2] * W + a[3] * Mc * W + a[4] * (Mc)**2 + a[5] * (W)**2
+    def map_eta(self, b, Mc, PI):
+        return b[0] + b[1] * Mc + b[2] * PI + b[3] * Mc * PI + b[4] * (Mc)**2 + b[5] * (PI)**2
+
+
+    def DAE_system(self, a, b):
         # Define vectors with names of states
         states = ['x']
         nd = len(states)
@@ -819,8 +832,9 @@ class Comp_system:
         for i in range(nd):
             globals()[states[i]] = xd[i]
         # Define vectors with names of algebraic variables
+
         algebraics = ['Min', 'Mout', 'Mrec', 'Mc',
-                      'Ps', 'Pd',   'PI',  'Ep',   'Yp',   'P']
+                      'Ps', 'Pd', 'PI', 'Ep', 'Yp', 'P']
 
         na = len(algebraics)
         xa = SX.sym('xa', na)
@@ -840,96 +854,164 @@ class Comp_system:
         # Declare algebraic equations
 
         W_min = 1e1
-        W_max =1e2
+        W_max = 1e2
         Vrec_min = 0e0
-        Vrec_max= 10.
+        Vrec_max = 1.
 
-        Vrec = Vrec_norm * (Vrec_max-Vrec_min) + Vrec_min
-        W    = W_norm * (W_max-W_min) + W_min
+        Vrec =Vrec_norm * (Vrec_max - Vrec_min) + Vrec_min
+        W =  W_norm * (W_max - W_min) + W_min
 
         Aeq = []
 
-        Aeq += [sqrt(Min / kin) - (Pin - Ps) ]
-        Aeq += [sqrt(Mout / kout) - (Pd - Pout)]
-        Aeq += [sqrt(Mrec / krec) - sqrt(Vrec) * (Pd - Ps)]
+        Aeq += [(Min /self.kin)**2 - ((self.Pin - Ps))]
+
+        Aeq += [(Mout/ self.kout)**2 - ((Pd - self.Pout))]
+
+        Aeq += [(Mrec/ self.krec)**2 - (Vrec)**2 * ((Pd - Ps))]
+
         Aeq += [Mout - Min]
+
         Aeq += [Mc - Min - Mrec]
-        Aeq += [Pd - PI * Ps]
-        Aeq += [PI - map_pi(Mc, W)]
-        Aeq += [Ep - map_eta(Mc, PI)]
-        Aeq += [Yp - ((Zin * R * Tin) / MW) * (nv / (nv - 1)) * (
-                    pow(PI, (nv - 1) / nv) - 1)]
+
+        Aeq += [Pd -  PI*Ps]
+
+        Aeq += [PI - self.map_pi1(a, Mc, W)]
+
+        Aeq += [Ep - self.map_eta(b, Mc, PI)]
+
+        Aeq += [Yp - ((self.Zin * self.R * self.Tin) / self.MW) * (self.nv / (self.nv - 1)) * (
+                PI**((self.nv - 1) / self.nv) - 1)]
+
+
         Aeq += [P * Ep - Yp * Mc]
 
-        return xd, xa, u, ODEeq, Aeq, states, algebraics, inputs
 
-    def integrator_system(self, map_pi, map_eta):
+
+        geq = [*Aeq]
+        geq += [self.Pin - Ps]
+        geq += [Pd - self.Pout]
+        geq += [Pd - Ps]
+
+        return xd, xa, u, ODEeq, Aeq, states, algebraics, inputs, geq
+
+    def integrator_system(self, a, b):
         """
         This function constructs the integrator to be suitable with casadi environment, for the equations of the model
         and the objective function with variable time step.
         inputs: NaN
         outputs: F: Function([x, u, dt]--> [xf, obj])
         """
-        xd, xa, u, ODEeq, Aeq, states, algebraics, inputs = self.DAE_system(map_pi, map_eta)
+        xd, xa, u, ODEeq, Aeq, states, algebraics, inputs, geq = self.DAE_system(a, b)
+        # lbg = np.zeros(np.shape(geq)[0])-1e-7
+        # ubg = np.hstack((np.zeros(np.shape(Aeq)[0])+1e-7,[inf]*3))
+        # lbw = np.zeros(np.shape(Aeq)[0])
+        # ubw = [inf]*np.shape(Aeq)[0]
+        # mse = sum1(vertcat(*Aeq)**2)/10
+        # problem = {'f': mse, 'x': xa, 'g': vertcat(*geq)}
+        # solver = nlpsol('solver', 'ipopt', problem, {
+        #     "ipopt.print_level": 5})  # , {"ipopt.hessian_approximation":"limited-memory"})#, {"ipopt.tol": 1e-10, "ipopt.print_level": 0})#, {"ipopt.hessian_approximation":"limited-memory"})
+        # sol = solver(x0=lbw, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg)
+        # x1 = sol['x']
+        # print(x1)
+        # self.x1 =x1
         VV = Function('vfcn', [xa, u], [vertcat(*Aeq)], ['w0', 'u'], ['w'])
-        solver = rootfinder('solver', 'newton', VV)
+        opt = dict(print_iteration=0,error_on_fail=False, max_iter=1e5)
+        solver = rootfinder('solver', 'newton', VV, opt)
+
 
         return solver
 
     def obj_sys_ca(self, u):
+        obj = 0
+        xx = []
+        for i in range(self.N_c):
+            x1 = self.eval[i](np.array([50., 50., 50., 10., 1.2e5, 2.e5 , 1.0e0, 1.0e-2, 0.1, 0.1]), u[i*2:2*i+2])#
+            obj += x1[-1]
+            xx  += [x1]
+        self.xx = xx
 
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x1 = x1
-        self.x2 = x2
-
-        obj = -(x1+x2) + 0.5 * np.random.normal(0., 1)
 
         return obj
 
     def obj_sys_ca_noise_less(self, u):
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x1 = x1
-        self.x1 = x1
-        self.x2 = x2
-
-        obj = -(x1+x2) 
+        obj = 0
+        xx = []
+        for i in range(self.N_c):
+            x1 = self.eval[i](np.array([250, 250, 250, 250, 1.0e5, 1.0e5]), u[i*2:2*i+2])#, 1.0e0, 1.0e-2, 0.1, 0.1
+            obj += x1[-1]
+            xx  += [x1]
+        self.xx = xx
+        obj = -obj
 
         return obj
 
-    def con1_sys_ca(self, u):
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x1 = x1
-        self.x2 = x2
-        pcon1 = x[0] - 0.12 + 5e-4 * np.random.normal(0., 1)
+    def con11_sys_ca(self, u):
+        u1 = u[:2]
+        x1 = self.eval[0](np.array([50., 50., 50., 10., 1.2e5, 2.e5 , 1.0e0, 1.0e-2, 0.1, 0.1]), u1)  #
+
+        g_1 = x1[6] - self.s0 - self.s1 * x1[3]
+        # x1[6] - self.c0 - self.c1 * x1[3]
+        pcon1 = g_1#- 0.12 + 5e-4 * np.random.normal(0., 1)
 
         return -pcon1.toarray()[0]
 
-    def con2_sys_ca(self, u):
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x1 = x1
-        self.x2 = x2  
-        pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
+    def con12_sys_ca(self, u):
+        u1 = u[:2]
+        x1 = self.eval[0](np.array([50, 50, 50, 50, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u1)
+        # g_1 = x1[6] - self.s0 - self.s1 * x1[3]
+        g_1 = x1[6] - self.c0 - self.c1 * x1[3]
+        pcon1 = g_1#- 0.12 + 5e-4 * np.random.normal(0., 1)
 
-        return -pcon2.toarray()[0]
-        
+        return pcon1.toarray()[0]
+
+    def con21_sys_ca(self, u):
+        u2 = u[2:4]
+        x1 = self.eval[1](np.array([50, 50, 50, 50, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u2)
+        g_1 = x1[6] - self.s0 - self.s1 * x1[3]
+        # x1[6] - self.c0 - self.c1 * x1[3]
+        pcon1 = g_1#- 0.12 + 5e-4 * np.random.normal(0., 1)
+
+        return -pcon1.toarray()[0]
+
+    def con22_sys_ca(self, u):
+        u2 = u[2:4]
+        x1 = self.eval[1](np.array([50, 50, 50, 50, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u2)
+        # g_1 = x1[6] - self.s0 - self.s1 * x1[3]
+        g_1 = x1[6] - self.c0 - self.c1 * x1[3]
+        pcon1 = g_1#- 0.12 + 5e-4 * np.random.normal(0., 1)
+
+        return pcon1.toarray()[0]
+
     def equality_sys_ca(self, ref, u):
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        self.x1 = x1
-        self.x2 = x2  
-        pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
+        con = 0
+
+        for i in range(self.N_c):
+            x1 = self.eval[i](np.array([250, 250, 250, 250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u[i*2:2*i+2])
+            con += x1[1]
+
+        con = con - ref
+        pcon = con#- 0.12 + 5e-4 * np.random.normal(0., 1)
+
+        return -pcon.toarray()[0]
+
+    def equality_right_sys_ca(self, ref, u):
+        obj = 0
+        xx = []
+        for i in range(self.N_c):
+            x1 = self.eval[i](np.array([250, 250, 250, 250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u[i*2:2*i+2])
+            obj += x1
+            xx  += [x1]
+        self.xx = xx
+        obj = -obj
 
         return -pcon2.toarray()[0]
-    
+
+
     def compliment_sys_ca(self, u):
-        x1 = self.eval1(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
-        x2 = self.eval2(np.array([250,250,250,250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1,0.1]), u)
+        x1 = self.eval1(np.array([250, 250, 250, 250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u)
+        x2 = self.eval2(np.array([250, 250, 250, 250, 1.0e5, 1.0e5, 1.0e0, 1.0e-2, 0.1, 0.1]), u)
         self.x1 = x1
-        self.x2 = x2  
+        self.x2 = x2
         pcon2 = x[5] - 0.08 + 5e-4 * np.random.normal(0., 1)
 
         return -pcon2.toarray()[0]
