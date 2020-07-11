@@ -744,7 +744,7 @@ class ITR_GP_RTO:
             GP_con_curv = [0] * (ndim)  # TR ellipsoid (functools)
             GP_con_f = [0] * (ng + ndim)  # Constraint plus ellipsoids
         else:
-            GP_con_f = [0] * (ng + 1)
+            GP_con_f = [0] * (ng + 3)
 
         for igp in range(ng):
             if self.noise[0] == None:
@@ -753,10 +753,20 @@ class ITR_GP_RTO:
             else:
                 GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
                                    multi_hyper=multi_hyper, var_out=False, noise = self.noise[igp+1])
-
-            GP_con_2[igp] = functools.partial(mistmatch_con, xk, GP_con[igp],
+            if igp<ng:
+                GP_con_2[igp] = functools.partial(mistmatch_con, xk, GP_con[igp],
                                               cons_model[igp])  # partially evaluating a function
-            GP_con_f[igp] = {'type': 'ineq', 'fun': GP_con_2[igp]}
+                GP_con_f[igp] = {'type': 'ineq', 'fun': GP_con_2[igp]}
+            else:
+                GP_con_2[igp] = functools.partial(mistmatch_con, xk, GP_con[igp],
+                                              cons_model[igp])  # partially evaluating a function
+                GP_con_f[igp] = {'type': 'eq', 'fun': GP_con_2[igp]}
+        compl =functools.partial(self.compliment_con, xk, GP_con_2[0])
+        comp2 =functools.partial(self.compliment_con, xk, GP_con_2[1])
+
+        GP_con_f[igp+2] = {'type': 'eq', 'fun': compl}
+        GP_con_f[igp+3] = {'type': 'eq', 'fun': comp2}
+
         if TR_curvature:
             for jdim in range(ndim):
                 GP_con_curv[jdim] = functools.partial(Curvature_TR_con, H_norm[:, jdim].reshape(1, ndim))
@@ -770,6 +780,10 @@ class ITR_GP_RTO:
 
         return GP_obj, GP_con_f, GP_con
 
+
+    def compliment_con(self, xk,con,d):
+        u = xk + d
+        return u[1] * con(d)
     #############################################################
     # --- Update derivatives and Hessian (Broyden and BFGS) --- #
     #############################################################

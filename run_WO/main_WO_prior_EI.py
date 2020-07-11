@@ -64,20 +64,29 @@ for i in range(30):
 
     plant = Comp_system(map_plant_a, map_plant_b)
     model = Comp_system(map_model_a, map_model_b)
-
-
+    ref = 1e2
+    eq_model = functools.partial(model.equality_sys_ca, ref)
+    eq_plant = functools.partial(plant.equality_sys_ca, ref)
     obj_model      = model.obj_sys_ca#model.WO_obj_ca
-    cons_model     = [model.con11_sys_ca, model.con12_sys_ca, model.con21_sys_ca, model.con22_sys_ca]
+    cons_model     = [model.con11_sys_ca, model.con12_sys_ca,
+                      model.con21_sys_ca, model.con22_sys_ca,
+                      eq_model]
     obj_system = plant.obj_sys_ca  # model.WO_obj_ca
-    cons_system = [plant.con11_sys_ca, plant.con12_sys_ca, plant.con21_sys_ca, plant.con22_sys_ca]
+    cons_system = [plant.con11_sys_ca, plant.con21_sys_ca,
+                   plant.con12_sys_ca, plant.con22_sys_ca,
+                   eq_plant]
 
     n_iter         = 20
-    bounds         = [[0.,0.],[1.,1.]]
-    Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+    bounds         = [[0., 1.],[0.,1.],[0.,1.],[0.,1.]]
+    u0             = np.array([0.7, 0.2, 0.8, 0.2])
+    Xtrain         = np.array([[0.7, 1.,0.8, 0.2],[0.9, 0.1,0.8, 0.2],
+                               [0.7,0.4,0.8, 0.2],[0.9,0.4,0.8, 0.2],
+                               [0.8, 0.2,0.7,0.1],[0.8, 0.2,0.9, 0.1],
+                               [0.7,0.4,0.7, 0.4],[0.9,0.2,0.8, 0.2],
+                              [0.6,0.2,0.8, 0.3]]) #U0
     #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
     samples_number = Xtrain.shape[0]
     data           = ['data0', Xtrain]
-    u0             = np.array([6.9,83])
 
     Delta0         = 0.25
     Delta_max      =0.7; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
@@ -91,7 +100,7 @@ for i in range(30):
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
                                     n_iter, data, np.array(bounds),obj_setting=3, noise=noise, multi_opt=30,
                                     multi_hyper=15, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
-                                    store_data=True, inner_TR=inner_TR_, scale_inputs=True)
+                                    store_data=True, inner_TR=inner_TR_, scale_inputs=False)
 
     print('Episode: ',i)
     if not TR_curvature_:

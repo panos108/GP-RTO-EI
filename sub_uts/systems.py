@@ -886,7 +886,6 @@ class Comp_system:
         Aeq += [P * Ep - Yp * Mc]
 
 
-
         geq = [*Aeq]
         geq += [self.Pin - Ps]
         geq += [Pd - self.Pout]
@@ -946,9 +945,8 @@ class Comp_system:
         return obj
 
     def con11_sys_ca(self, u):
-        u1 = u[:2]
-        x1 = self.eval[0](np.array([50., 50., 50., 10., 1.2e5, 2.e5 , 1.0e0, 1.0e-2, 0.1, 0.1]), u1)  #
-
+        u1  = u[:2]
+        x1  = self.eval[0](np.array([250., 250., 250., 250., 1.2e5, 2.e5 , 1.0e0, 1.0e-2, 0.1, 0.1]), u1)
         g_1 = x1[6] - self.s0 - self.s1 * x1[3]
         # x1[6] - self.c0 - self.c1 * x1[3]
         pcon1 = g_1#- 0.12 + 5e-4 * np.random.normal(0., 1)
