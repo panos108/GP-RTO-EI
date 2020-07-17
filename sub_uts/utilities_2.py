@@ -25,7 +25,7 @@ class GP_model:
     ###########################
     # --- initializing GP --- #
     ###########################
-    def __init__(self, X, Y, kernel, multi_hyper, var_out=True, noise=None):
+    def __init__(self, X, Y, kernel, multi_hyper, var_out=True, noise=None, GP_casadi = False):
 
         # GP variable definitions
         self.X, self.Y, self.kernel = X, Y, kernel
@@ -33,7 +33,7 @@ class GP_model:
         self.ny_dim = Y.shape[1]
         self.multi_hyper = multi_hyper
         self.var_out = var_out
-
+        self.GP_casadi = GP_casadi
         # normalize data
         self.X_mean, self.X_std = np.mean(X, axis=0), np.std(X, axis=0)
         self.Y_mean, self.Y_std = np.mean(Y, axis=0), np.std(Y, axis=0)
@@ -41,7 +41,7 @@ class GP_model:
 
         # determine hyperparameters
         self.hypopt, self.invKopt = self.determine_hyperparameters(noise)
-
+        self.meanfcn, self.varfcn = self.GP_predictor()
         #############################
 
     # --- Covariance Matrix --- #
@@ -179,11 +179,64 @@ class GP_model:
     ########################
     # --- GP inference --- #
     ########################
+    def GP_predictor(self):# , X,Y):
+            nd, invKopt, hypopt = self.ny_dim, self.invKopt, self.hypopt
+            Ynorm, Xnorm = SX(DM(self.Y_norm)), SX(DM(self.X_norm))
+            ndat = Xnorm.shape[0]
+            nX, covSEfcn = self.nx_dim, self.covSEard()
+            stdX, stdY, meanX, meanY = SX(self.X_std), SX(self.Y_std), SX(self.X_mean), SX(self.Y_mean)
+            #        nk     = 12
+            x = SX.sym('x', nX)
+            # nk     = X.shape[0]
+            xnorm = (x - meanX) / stdX
+            # Xnorm2 = (X - meanX)/stdX
+            # Ynorm2 = (Y - meanY)/stdY
+
+            k = SX.zeros(ndat)
+            # k2     = SX.zeros(ndat+nk)
+            mean = SX.zeros(nd)
+            mean2 = SX.zeros(nd)
+            var = SX.zeros(nd)
+            # Xnorm2 = SX.sym('Xnorm2',ndat+nk,nX)
+            # invKY2 = SX.sym('invKY2',ndat+nk,nd)
+
+            for i in range(nd):
+                invK = SX(DM(invKopt[i]))
+                hyper = SX(DM(hypopt[:, i]))
+                ellopt, sf2opt = exp(2 * hyper[:nX]), exp(2 * hyper[nX])
+                for j in range(ndat):
+                    k[j] = covSEfcn(xnorm, Xnorm[j, :], ellopt, sf2opt)
+                # for j in range(ndat+nk):
+                #    k2[j] = covSEfcn(xnorm,Xnorm2[j,:],ellopt,sf2opt)
+
+                invKYnorm = mtimes(invK, Ynorm[:, i])
+                mean[i] = mtimes(k.T, invKYnorm)
+                # mean2[i]  = mtimes(k2.T,invKY2[:,i])
+                var[i] = sf2opt - mtimes(mtimes(k.T, invK), k)
+
+            meanfcn = Function('meanfcn', [x], [mean * stdY + meanY])
+            # meanfcn2 = Function('meanfcn2',[x,Xnorm2,invKY2],[mean2*stdY + meanY])
+            varfcn = Function('varfcn', [x], [var * stdY ** 2])
+            # varfcnsd = Function('varfcnsd',[x],[var])
+
+            return meanfcn, varfcn  # , meanfcn2, varfcnsd
+
+    def covSEard(self):
+        nx_dim = self.nx_dim
+        ell    = SX.sym('ell', nx_dim)
+        sf2    = SX.sym('sf2')
+        x, z   = SX.sym('x', nx_dim), SX.sym('z', nx_dim)
+        dist   = sum1((x - z)**2 / ell)
+        covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[sf2*exp(-.5*dist)])
+
+        return covSEfcn
+
 
     def GP_inference_np(self, x):
         '''
         --- decription ---
         '''
+
         nx_dim = self.nx_dim
         kernel, ny_dim = self.kernel, self.ny_dim
         hypopt, Cov_mat = self.hypopt, self.Cov_mat
@@ -192,31 +245,37 @@ class GP_model:
         invKsample = self.invKopt
         Xsample, Ysample = self.X_norm, self.Y_norm
         var_out = self.var_out
-        # Sigma_w                = self.Sigma_w (if input noise)
-
-        xnorm = (x - meanX) / stdX
-        mean = np.zeros(ny_dim)
-        var = np.zeros(ny_dim)
-        # --- Loop over each output (GP) --- #
-        for i in range(ny_dim):
-            invK = invKsample[i]
-            hyper = hypopt[:, i]
-            ellopt, sf2opt = np.exp(2 * hyper[:nx_dim]), np.exp(2 * hyper[nx_dim])
-
-            # --- determine covariance of each output --- #
-            k = calc_cov_sample(xnorm, Xsample, ellopt, sf2opt)
-            mean[i] = np.matmul(np.matmul(k.T, invK), Ysample[:, i])
-            var[i] = max(0., sf2opt - np.matmul(np.matmul(k.T, invK), k))  # numerical error
-            # var[i] = sf2opt + Sigma_w[i,i]/stdY[i]**2 - np.matmul(np.matmul(k.T,invK),k) (if input noise)
-
-        # --- compute un-normalized mean --- #
-        mean_sample = mean * stdY + meanY
-        var_sample = var * stdY ** 2
-
-        if var_out:
-            return mean_sample, var_sample
+        if self.GP_casadi:
+            if var_out:
+                return self.meanfcn(x).toarray().flatten()[0], self.varfcn(x).toarray().flatten()[0]
+            else:
+                return self.meanfcn(x).toarray().flatten()[0]#.flatten()[0]
         else:
-            return mean_sample.flatten()[0]
+            # Sigma_w                = self.Sigma_w (if input noise)
+
+            xnorm = (x - meanX) / stdX
+            mean = np.zeros(ny_dim)
+            var = np.zeros(ny_dim)
+            # --- Loop over each output (GP) --- #
+            for i in range(ny_dim):
+                invK = invKsample[i]
+                hyper = hypopt[:, i]
+                ellopt, sf2opt = np.exp(2 * hyper[:nx_dim]), np.exp(2 * hyper[nx_dim])
+
+                # --- determine covariance of each output --- #
+                k = calc_cov_sample(xnorm, Xsample, ellopt, sf2opt)
+                mean[i] = np.matmul(np.matmul(k.T, invK), Ysample[:, i])
+                var[i] = max(0., sf2opt - np.matmul(np.matmul(k.T, invK), k))  # numerical error
+                # var[i] = sf2opt + Sigma_w[i,i]/stdY[i]**2 - np.matmul(np.matmul(k.T,invK),k) (if input noise)
+
+            # --- compute un-normalized mean --- #
+            mean_sample = mean * stdY + meanY
+            var_sample = var * stdY ** 2
+
+            if var_out:
+                return mean_sample, var_sample
+            else:
+                return mean_sample.flatten()[0]
 
 ######################################
 # Central finite differences 5 points
@@ -285,7 +344,7 @@ class ITR_GP_RTO:
     def __init__(self, obj_model, obj_system, cons_model, cons_system, x0,
                  Delta0, Delta_max, eta0, eta1, gamma_red, gamma_incr,
                  n_iter, data, bounds, obj_setting=2, noise=None, multi_opt=5, multi_hyper=10, TR_scaling=True,
-                 TR_curvature=True, store_data=True, inner_TR=False, scale_inputs=False):
+                 TR_curvature=True, store_data=True, inner_TR=False, scale_inputs=False,GP_casadi=True):
         '''
         data = ['int', bound_list=[[0,10],[-5,5],[3,8]], samples_number] <=> d = ['int', np.array([[-12, 8]]), 3]
         data = ['data0', Xtrain]
@@ -294,6 +353,7 @@ class ITR_GP_RTO:
 
         '''
         # internal variable definitions
+        self.GP_casadi = GP_casadi
         self.obj, self.noise = obj_setting, noise
         self.obj_model, self.n_iter = obj_model, n_iter
         self.multi_opt, self.multi_hyper = multi_opt, multi_hyper
@@ -928,7 +988,7 @@ class ITR_GP_RTO:
                 # ynew[0,ii] = funcs[ii](np.array(xnew[:]).flatten())
                 ynew[0, ii] = funcs_system[ii](np.array(xnew[:]).flatten()) - funcs_model[ii](
                     np.array(xnew[:]).flatten())
-
+            print('New Objective: ', -funcs_system[0](np.array(xnew[:]).flatten()))
             # adding new point to sample
             X_opt = np.vstack((X_opt, xnew))
             y_opt = np.hstack((y_opt, ynew.T))
