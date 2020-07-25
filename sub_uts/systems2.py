@@ -316,7 +316,7 @@ class Bio_system:
         self.states, self.algebraics, self.inputs, self.nd, self.na, self.nu, \
         self.nmp,self. modparval= self.DAE_system()
         self.eval = self.integrator_model()
-        self.Sigma_v = [400.,1e5,1e-2]*diag(np.ones(self.nd))*1e-7*0
+        self.Sigma_v = [400.,1e5,1e-2]*diag(np.ones(self.nd))*1e-7
     def specifications(self):
         ''' Specify Problem parameters '''
         tf = 240.  # final time
@@ -408,8 +408,8 @@ class Bio_system:
 
     def bio_obj_ca(self, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = u0 * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2))
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
 
@@ -422,8 +422,8 @@ class Bio_system:
 
     def bio_con1_ca(self, n, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = u0 * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2))
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
 
@@ -436,8 +436,8 @@ class Bio_system:
 
     def bio_con2_ca(self, n, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2) )
-        u  = u0* (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 *(self.u_max - self.u_min) + self.u_min
 
 
 
@@ -554,8 +554,8 @@ class Bio_model:
 
     def bio_obj_ca(self, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = np.array(u0).reshape(-1,1) * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
 
@@ -580,7 +580,7 @@ class Bio_model:
     def bio_con1_ca(self, n, u0):
         x  = self.x0
         u1 = np.array(u0).reshape((self.nk,2))
-        u  = np.array(u1).reshape(-1,1)   * (self.u_max - self.u_min) + self.u_min
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
 
@@ -604,8 +604,8 @@ class Bio_model:
 
     def bio_con2_ca(self, n, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = np.array(u0).reshape((-1,1)) * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
 
@@ -629,8 +629,8 @@ class Bio_model:
 
     def bio_obj_ca_RK4(self, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = np.array(u0).reshape((-1,1)) * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
         DT = self.tf/self.nk/4
 
 
@@ -664,8 +664,8 @@ class Bio_model:
 
     def bio_con1_ca_RK4(self, n, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = u0 * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
         DT = self.tf/self.nk/4
@@ -697,8 +697,8 @@ class Bio_model:
 
     def bio_con2_ca_RK4(self, n, u0):
         x  = self.x0
-        u0 = np.array(u0).reshape((self.nk,2))
-        u  = np.array(u0).reshape((-1,1)) * (self.u_max - self.u_min) + self.u_min
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
         DT = self.tf/self.nk/4
@@ -756,8 +756,8 @@ class Bio_model:
 
     def bio_con1_ca_f(self, x):
         pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
-        return pcon1
+        return -pcon1
 
     def bio_con2_ca_f(self, x):
         pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)
-        return pcon1
+        return -pcon1

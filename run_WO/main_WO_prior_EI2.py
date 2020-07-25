@@ -15,7 +15,7 @@ from matplotlib.patches import Ellipse
 
 from casadi import *
 
-from sub_uts.systems import *
+from sub_uts.systems2 import *
 from sub_uts.utilities_4 import *
 from plots_RTO import compute_obj, plot_obj, plot_obj_noise
 
@@ -111,12 +111,12 @@ for i in range(30):
     x1 = plant.bio_con1_ca(1,u)
     x2 = plant.bio_con2_ca(1,u)
     functools.partial(plant.bio_con1_ca,1)
-    obj_model  = model.bio_obj_ca#mode
+    obj_model  = model.bio_obj_ca_RK4#mode
     F = model.bio_model_ca()
     cons_model = []# l.WO_obj_ca
     for k in range(model.nk):
-        cons_model.append(functools.partial(model.bio_con1_ca, k+1))
-        cons_model.append(functools.partial(model.bio_con2_ca, k+1))
+        cons_model.append(functools.partial(model.bio_con1_ca_RK4, k+1))
+        cons_model.append(functools.partial(model.bio_con2_ca_RK4, k+1))
 
 
 
@@ -133,21 +133,21 @@ for i in range(30):
         cons_system.append(functools.partial(plant.bio_con2_ca, k+1))
 
     x = np.random.rand(24)
-    print(F(model.x0, x[0])[1] / 800 - 1, model.bio_con1_ca(1, x))
+    print(F(model.x0, x[:2])[1] / 800 - 1, -model.bio_con1_ca_RK4(1, x))
 
-    n_iter         = 50
+    n_iter         = 30
     bounds         = ([[0., 1.]] * model.nk*model.nu)#[[0.,1.],[0.,1.]]
-    X              = pickle.load(open('initial_data_bio_12.p','rb'))
+    X              = pickle.load(open('initial_data_bio_12_ca_new.p','rb'))
     Xtrain         = X[:model.nk*model.nu+1]#1.*(np.random.rand(model.nk*model.nu+500,model.nk*model.nu))+0.#np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
 #
 #1.*(np.random.rand(model.nk*model.nu+500,model.nk*model.nu))+0.#np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
     #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
     samples_number = Xtrain.shape[0]
     data           = ['data0', Xtrain]
-    u0             = X[model.nk*model.nu+1]#np.array([*[0.6]*model.nk,*[0.8]*model.nk])#
+    u0             = X[18]#model.nk*model.nu+1]#np.array([*[0.6]*model.nk,*[0.8]*model.nk])#
 
-    Delta0         = 0.25
-    Delta_max      =0.7; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
+    Delta0         = 0.5
+    Delta_max      =5.; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
     TR_scaling_    = False
     TR_curvature_  = False
     inner_TR_      = False
@@ -156,7 +156,7 @@ for i in range(30):
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
-                                    n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=3,
+                                    n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=40,
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_, scale_inputs=False, model=model)
 

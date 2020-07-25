@@ -8,13 +8,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="GP-RTO-EI" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="174" column="69" selection-start-line="174" selection-end-line="175" />
+            <state relative-caret-position="113">
+              <caret line="137" selection-start-line="137" selection-end-line="137" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -23,30 +26,49 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+        <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-165">
-              <caret line="344" column="32" selection-start-line="344" selection-start-column="25" selection-end-line="344" selection-end-column="32" />
+            <state relative-caret-position="352">
+              <caret line="175" selection-start-line="175" selection-end-line="175" />
               <folding>
-                <element signature="e#8725#9316#0" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
+        <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/casadi/casadi.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2164">
-              <caret line="728" column="37" selection-start-line="728" selection-start-column="21" selection-end-line="728" selection-end-column="37" />
-              <folding>
-                <element signature="e#6036#9088#0" />
-                <element signature="e#9113#9135#0" />
-                <element signature="e#9160#9179#0" />
-                <element signature="e#17815#18203#0" />
-                <element signature="e#18425#19097#0" />
-                <element signature="e#18760#19224#0" />
-              </folding>
+            <state relative-caret-position="123">
+              <caret line="16672" selection-start-line="16672" selection-end-line="16672" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="991" column="17" selection-start-line="991" selection-start-column="17" selection-end-line="991" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_4.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-61">
+              <caret line="1169" selection-start-line="1169" selection-end-line="1169" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sub_uts/systems2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="219">
+              <caret line="382" selection-start-line="382" selection-end-line="384" />
             </state>
           </provider>
         </entry>
@@ -54,8 +76,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plots_RTO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8440">
-              <caret line="461" column="45" selection-start-line="461" selection-start-column="45" selection-end-line="461" selection-end-column="45" />
+            <state relative-caret-position="103">
+              <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -74,36 +96,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>c1o</find>
-      <find>map_pi</find>
-      <find>Inner_TR_con</find>
-      <find>fun</find>
-      <find>constrai</find>
-      <find>obj_</find>
-      <find>obj_s</find>
-      <find>obj ==</find>
-      <find>Episode</find>
+      <find>, order='F'</find>
+      <find>RK</find>
+      <find>pcon1</find>
+      <find>nmpc</find>
+      <find>construct_opt_ca</find>
+      <find>self.</find>
+      <find>SELF.DELTA0**</find>
+      <find>objec</find>
+      <find>RK4</find>
+      <find>model</find>
+      <find>order</find>
+      <find>SELF.DELTA0</find>
+      <find>ob</find>
       <find>obj</find>
-      <find>nk</find>
-      <find>nk</find>
-      <find>GP_obj</find>
-      <find>constrain</find>
-      <find>mismat</find>
-      <find>nk =</find>
-      <find>Bio_sys</find>
+      <find>System_Cons_check</find>
+      <find>self.Delta0</find>
+      <find>Step_constraint</find>
+      <find>Delta0</find>
+      <find>return De</find>
+      <find>objective:</find>
+      <find>INFERENCE_NP</find>
+      <find>obj ==</find>
+      <find>obje</find>
+      <find>check</find>
+      <find>slack</find>
+      <find>cons_</find>
+      <find>cons_c</find>
       <find>Sigma_v</find>
-      <find>mistmatch_con</find>
-      <find>GP_inf</find>
-      <find>GP_INFERE</find>
-      <find>gp_in</find>
-      <find>obj_f</find>
-      <find>mist</find>
-      <find>GP_infere</find>
-      <find>nk =</find>
-      <find>casadi</find>
-      <find>GP_obj_f</find>
-      <find>Delta_m</find>
-      <find>GP_</find>
+      <find>Adjust_TR</find>
+      <find>specifications</find>
     </findStrings>
     <replaceStrings>
       <replace>Benoit_Model</replace>
@@ -112,6 +134,10 @@
       <replace>np.array([1.1,-0.1])</replace>
       <replace>noise = [np.sqrt(1e-3)]*2</replace>
       <replace>con1_model</replace>
+      <replace>u  = np.array(u1) * (self.u_max - self.u_min) + self.u_min</replace>
+      <replace>u1 = np.array(u0).reshape((self.nk,2), order='F' )</replace>
+      <replace />
+      <replace>return -pcon1</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -129,16 +155,20 @@
         <option value="$PROJECT_DIR$/plots_RTO.py" />
         <option value="$PROJECT_DIR$/run_WO/main_simple.py" />
         <option value="$PROJECT_DIR$/run_simple/main_simple.py" />
-        <option value="$PROJECT_DIR$/sub_uts/systems.py" />
-        <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
         <option value="$PROJECT_DIR$/sub_uts/utilities_2.py" />
+        <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
+        <option value="$PROJECT_DIR$/sub_uts/systems.py" />
+        <option value="$PROJECT_DIR$/sub_uts/utilities_4.py" />
+        <option value="$PROJECT_DIR$/sub_uts/systems2.py" />
+        <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="948" />
-    <option name="width" value="981" />
-    <option name="height" value="1032" />
+    <option name="x" value="240" />
+    <option name="y" value="127" />
+    <option name="width" value="1440" />
+    <option name="height" value="765" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -155,7 +185,7 @@
             <path>
               <item name="GP-RTO-EI" type="b2602c69:ProjectViewProjectNode" />
               <item name="GP-RTO-EI" type="462c0819:PsiDirectoryNode" />
-              <item name="run_simple" type="462c0819:PsiDirectoryNode" />
+              <item name="run_WO" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GP-RTO-EI" type="b2602c69:ProjectViewProjectNode" />
@@ -170,11 +200,13 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\sub_uts" />
+      <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\run_WO" />
       <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\run_simple" />
       <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\gp-rto" />
     </key>
@@ -192,7 +224,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="main_WO_prior_EI" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="main_WO_prior_EI2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="gp-rto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -204,7 +236,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -227,7 +259,7 @@
     </task>
     <servers />
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -238,15 +270,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49744898" visible="true" weight="0.15806195" />
-      <window_info id="Structure" order="1" sideWeight="0.502551" side_tool="true" visible="true" weight="0.15806195" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.71428573" visible="true" weight="0.15806195" />
+      <window_info id="Structure" order="1" sideWeight="0.20304568" side_tool="true" weight="0.17334495" />
+      <window_info id="Favorites" order="2" sideWeight="0.2857143" side_tool="true" visible="true" weight="0.15806195" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.5319149" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32978722" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.30496454" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.56560284" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32978722" />
@@ -269,30 +300,38 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>862</line>
+          <line>863</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>174</line>
+          <line>175</line>
           <option name="timeStamp" value="122" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
-          <line>172</line>
+          <line>173</line>
           <option name="timeStamp" value="142" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
+          <line>137</line>
+          <option name="timeStamp" value="200" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sub_uts/systems.py</url>
+          <line>586</line>
+          <option name="timeStamp" value="207" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py</url>
+          <line>175</line>
+          <option name="timeStamp" value="220" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="332" selection-start-line="332" selection-end-line="332" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../../Sensitivity analysis QM/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -361,42 +400,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plots_RTO.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8440">
-          <caret line="461" column="45" selection-start-line="461" selection-start-column="45" selection-end-line="461" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/numpy/lib/twodim_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="157" lean-forward="true" selection-start-line="157" selection-end-line="157" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/casadi/casadi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="82" selection-start-line="82" selection-end-line="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2164">
-          <caret line="728" column="37" selection-start-line="728" selection-start-column="21" selection-end-line="728" selection-end-column="37" />
-          <folding>
-            <element signature="e#6036#9088#0" />
-            <element signature="e#9113#9135#0" />
-            <element signature="e#9160#9179#0" />
-            <element signature="e#17815#18203#0" />
-            <element signature="e#18425#19097#0" />
-            <element signature="e#18760#19224#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -407,22 +414,96 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="309" selection-start-line="309" selection-end-line="309" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="29" column="33" lean-forward="true" selection-start-line="29" selection-start-column="33" selection-end-line="29" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/numpy/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="174" column="69" selection-start-line="174" selection-end-line="175" />
+        <state relative-caret-position="113">
+          <caret line="137" selection-start-line="137" selection-end-line="137" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="438" column="46" selection-start-line="438" selection-start-column="46" selection-end-line="438" selection-end-column="46" />
+          <folding>
+            <element signature="e#6036#9088#0" />
+            <element signature="e#9113#9135#0" />
+            <element signature="e#9160#9179#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Dropbox/GP_NMPC_batch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="1019" column="52" selection-start-line="1019" selection-start-column="52" selection-end-line="1019" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plots_RTO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-165">
-          <caret line="344" column="32" selection-start-line="344" selection-start-column="25" selection-end-line="344" selection-end-column="32" />
+        <state relative-caret-position="60">
+          <caret line="991" column="17" selection-start-line="991" selection-start-column="17" selection-end-line="991" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_4.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-61">
+          <caret line="1169" selection-start-line="1169" selection-end-line="1169" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/systems2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="219">
+          <caret line="382" selection-start-line="382" selection-end-line="384" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/casadi/casadi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="16672" selection-start-line="16672" selection-end-line="16672" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="175" selection-start-line="175" selection-end-line="175" />
           <folding>
-            <element signature="e#8725#9316#0" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
