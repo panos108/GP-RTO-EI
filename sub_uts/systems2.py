@@ -453,13 +453,13 @@ class Bio_system:
 class Bio_model:
 
 
-    def __init__(self):
+    def __init__(self, empty =False):
         self.nk, self.tf, self.x0, _, _ = self.specifications()
         self.xd, self.xa, self.u, _, self.ODEeq, self.Aeq, self.u_min, self.u_max,\
         self.states, self.algebraics, self.inputs, self.nd, self.na, self.nu, \
         self.nmp,self. modparval= self.DAE_system()
         self.eval = self.integrator_model()
-
+        self.empty = empty
     def specifications(self):
         ''' Specify Problem parameters '''
         tf = 240.  # final time
@@ -473,6 +473,7 @@ class Bio_model:
     def DAE_system(self):
         # Define vectors with names of states
         states = ['x', 'n', 'q']
+
         nd = len(states)
         xd = SX.sym('xd', nd)
         for i in range(nd):
@@ -751,13 +752,159 @@ class Bio_model:
 
 
     def bio_obj_ca_f(self, x):
-
-        return -x[-1]
+        if not(self.empty):
+            return -x[-1]
+        else:
+            return 0.
 
     def bio_con1_ca_f(self, x):
-        pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
-        return -pcon1
+        if not(self.empty):
+            pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
+            return -pcon1
+        else:
+            return 0.
 
     def bio_con2_ca_f(self, x):
+        if not(self.empty):
+            pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)
+            return -pcon1
+        else:
+            return 0.
+
+
+
+
+    def bio_obj_ca_RK4_empty(self, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
+        DT = self.tf/self.nk/4
+
+
+        for i in range(self.nk):
+            if np.any(x<0):
+                print(2)
+            elif np.any(u[i]<0):
+                print(2)
+            for j in range(self.nk):
+                if u[j,1]<0:
+                    u[j,1]= 0.
+
+            f = self.ODEeq
+
+            for j in range(4):
+                k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
+                k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
+                k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
+                k4 = f(x0=vertcat(np.array(x + DT * k2)), p= vertcat(u[i]))['xdot']
+                x = x + DT / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+
+            # xd = self.eval(x0=vertcat(np.array(x1)), p=vertcat(u[i]))
+            # x1 = np.array(xd['xf'].T)[0]
+            for j in range(self.nd):
+                if x[j]<0:
+                    x[j]=0
+
+
+        return -0*x[-1].toarray()[0][0]
+
+    def bio_con1_ca_RK4_empty(self, n, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
+
+
+        DT = self.tf/self.nk/4
+
+        for i in range(n):
+            if np.any(x<0):
+                print(2)
+            elif np.any(u[i]<0):
+                print(2)
+            for j in range(self.nk):
+                if u[j,1]<0:
+                    u[j,1]= 0.
+
+
+            f = self.ODEeq
+
+            for j in range(4):
+                k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
+                k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
+                k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
+                k4 = f(x0=vertcat(np.array(x + DT * k2)), p= vertcat(u[i]))['xdot']
+                x = x + DT / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+            for j in range(self.nd):
+                if x[j]<0:
+                    x[j]=0
+        pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
+        return -0*pcon1.toarray()[0][0]
+
+    def bio_con2_ca_RK4_empty(self, n, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
+
+
+        DT = self.tf/self.nk/4
+
+        for i in range(n):
+            if np.any(x<0):
+                print(2)
+            elif np.any(u[i]<0):
+                print(2)
+            for j in range(self.nk):
+                if u[j,1]<0:
+                    u[j,1]= 0.
+
+
+            f = self.ODEeq
+
+            for j in range(4):
+                k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
+                k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
+                k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
+                k4 = f(x0=vertcat(np.array(x + DT * k2)), p= vertcat(u[i]))['xdot']
+                x = x + DT / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+            for j in range(self.nd):
+                if x[j]<0:
+                    x[j]=0
         pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)
-        return -pcon1
+        return -0*pcon1.toarray()[0][0]
+
+    def bio_model_ca_empty(self):
+        M = 4  # RK4 steps per interval
+
+        X0 = SX.sym('X0', self.nd)
+        U = SX.sym('U', self.nu,1)
+        u  = U * (self.u_max - self.u_min) + self.u_min
+        DT = self.tf/self.nk/M
+
+        f = self.ODEeq
+        X = X0
+        for j in range(M):
+            k1 = f(X, u)
+            k2 = f(X + DT / 2 * k1, u)
+            k3 = f(X + DT / 2 * k2, u)
+            k4 = f(X + DT * k2, u)
+            X  = X + DT / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+        F = Function('F', [X0, U], [X], ['x0', 'u'], ['xf'])
+
+        return F
+
+
+    def bio_obj_ca_f_empty(self, x):
+
+        return -0*x[-1]
+
+    def bio_con1_ca_f_empty(self, x):
+        pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
+        return -0*pcon1
+
+    def bio_con2_ca_f_empty(self, x):
+        pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)
+        return -0*pcon1

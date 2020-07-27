@@ -28,69 +28,93 @@ if not(os.path.exists('figs_WO')):
 if not(os.path.exists('figs_noise_WO')):
     os.mkdir('figs_noise_WO')
 
-# obj_no_prior_with_exploration_ei          = compute_obj('no_prior_with_exploration_ei')
-# obj_with_prior_with_exploration_ei        = compute_obj('with_prior_with_exploration_ei')
-# obj_with_prior_with_exploration_ei_noise  = compute_obj('with_prior_with_exploration_ei_noise')
-# obj_no_prior_with_exploration_ei_noise    = compute_obj('no_prior_with_exploration_ei_noise')
-# obj_no_prior_with_exploration_ucb         = compute_obj('no_prior_with_exploration_ucb')
-# obj_with_prior_with_exploration_ucb       = compute_obj('with_prior_with_exploration_ucb')
-# obj_with_prior_with_exploration_ucb_noise = compute_obj('with_prior_with_exploration_ucb_noise')
-# obj_no_prior_with_exploration_ucb_noise   = compute_obj('no_prior_with_exploration_ucb_noise')
-# obj_no_prior_no_exploration               = compute_obj('no_prior_no_exploration')
-# obj_with_prior_no_exploration             = compute_obj('with_prior_no_exploration')
-# obj_with_prior_no_exploration_noise       = compute_obj('with_prior_no_exploration_noise')
-# obj_no_prior_no_exploration_noise         = compute_obj('no_prior_no_exploration_noise')
-#
-# data = [obj_no_prior_with_exploration_ei[-1],
-#         obj_with_prior_with_exploration_ei[-1],
-#         obj_with_prior_with_exploration_ei_noise[-1],
-#         obj_no_prior_with_exploration_ei_noise[-1],
-#         obj_no_prior_with_exploration_ucb[-1],
-#         obj_with_prior_with_exploration_ucb[-1],
-#         obj_with_prior_with_exploration_ucb_noise[-1],
-#         obj_no_prior_with_exploration_ucb_noise[-1],
-#         obj_no_prior_no_exploration[-1],
-#         obj_with_prior_no_exploration[-1],
-#         obj_with_prior_no_exploration_noise[-1],
-#         obj_no_prior_no_exploration_noise[-1]]
-# ni = 20
-# for i,obj_ in enumerate(data):
-#     obj_mean = obj_.mean(axis=0)
-#     obj_max = obj_.max(axis=0)
-#     obj_min = obj_.min(axis=0)
-#     plt.errorbar(np.linspace(1, ni, ni), obj_mean, yerr=[obj_mean - obj_min, obj_max - obj_mean],
-#              alpha=1.)
-# #
-# # plt.plot(np.linspace(1, ni, ni), obj_max,
-# #              color='#255E69', alpha=1.)
-# #
-# # plt.plot(np.linspace(1, ni, ni), obj_min,
-# #              color='#255E69', alpha=1.)
-# # plt.plot(np.linspace(1, ni, ni), [obj_max.max()]*ni,
-# #              color='#255E69', alpha=1.)
-# plt.xlabel('RTO-iter')
-# plt.ylabel('Objective')
-# plt.tick_params(right=True, top=True, left=True, bottom=True)
-# plt.tick_params(axis="y", direction="in")
-# plt.tick_params(axis="x", direction="in")
-# plt.tight_layout()
-# plt.savefig('obj.png', dpi=400)
-# plt.close()
+#------------------------------------------------------------------
+np.random.seed(0)
+X_opt_mc = []
+y_opt_mc = []
+TR_l_mc = []
+xnew_mc = []
+backtrack_1_mc = []
 
-# Plot('no_prior_with_exploration_ei')
-# Plot('with_prior_with_exploration_ei')
-# Plot('with_prior_with_exploration_ei_noise')
-# Plot('no_prior_with_exploration_ei_noise')
-# Plot('no_prior_with_exploration_ucb')
-# Plot('with_prior_with_exploration_ucb')
-# Plot('with_prior_with_exploration_ucb_noise')
-# Plot('no_prior_with_exploration_ucb_noise')
-# Plot('no_prior_no_exploration')
-# Plot('with_prior_no_exploration')
-# Plot('with_prior_no_exploration_noise')
-# Plot('no_prior_no_exploration_noise')
-# plot_obj(compute_obj)
-# plot_obj_noise(compute_obj)
+
+for i in range(30):
+
+
+
+    plant = Bio_system()
+    model = Bio_model(empty=True)#empy=True)
+
+    u = [0.]*plant.nk*plant.nu
+    xf = plant.bio_obj_ca(u)
+    x1 = plant.bio_con1_ca(1,u)
+    x2 = plant.bio_con2_ca(1,u)
+    functools.partial(plant.bio_con1_ca,1)
+    obj_model  = model.bio_obj_ca_RK4_empty#mode
+    F = model.bio_model_ca()
+    cons_model = []# l.WO_obj_ca
+    for k in range(model.nk):
+        cons_model.append(functools.partial(model.bio_con1_ca_RK4_empty, k+1))
+        cons_model.append(functools.partial(model.bio_con2_ca_RK4_empty, k+1))
+
+
+
+    # obj_model  = obj_empty
+    # cons_model = []# l.WO_obj_ca
+    # for k in range(model.nk):
+    #     cons_model.append(con_empty)
+    #     cons_model.append(con_empty)
+
+    obj_system  = plant.bio_obj_ca
+    cons_system = []# l.WO_obj_ca
+    for k in range(model.nk):
+        cons_system.append(functools.partial(plant.bio_con1_ca, k+1))
+        cons_system.append(functools.partial(plant.bio_con2_ca, k+1))
+
+    x = np.random.rand(24)
+    print(model.bio_con1_ca_f(x), -model.bio_con1_ca_RK4_empty(1, x))
+
+    n_iter         = 30
+    bounds         = ([[0., 1.]] * model.nk*model.nu)#[[0.,1.],[0.,1.]]
+    X              = pickle.load(open('initial_data_bio_12_ca_new.p','rb'))
+    Xtrain         = X[:model.nk*model.nu+1]#1.*(np.random.rand(model.nk*model.nu+500,model.nk*model.nu))+0.#np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+#
+#1.*(np.random.rand(model.nk*model.nu+500,model.nk*model.nu))+0.#np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+    #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
+    samples_number = Xtrain.shape[0]
+    data           = ['data0', Xtrain]
+    u0             = X[18]#model.nk*model.nu+1]#np.array([*[0.6]*model.nk,*[0.8]*model.nk])#
+
+    Delta0         = 0.5
+    Delta_max      =5.; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
+    TR_scaling_    = False
+    TR_curvature_  = False
+    inner_TR_      = False
+    noise = None#[0.5**2, 5e-8, 5e-8]
+
+
+    ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
+                                    Delta_max, eta0, eta1, gamma_red, gamma_incr,
+                                    n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=40,
+                                    multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
+                                    store_data=True, inner_TR=inner_TR_, scale_inputs=False, model=model)
+
+    print('Episode: ',i)
+    if not TR_curvature_:
+        X_opt, y_opt, TR_l, xnew, backtrack_l             = ITR_GP_opt.RTO_routine()
+        backtrack_l                                       = [False, *backtrack_l]
+    else:
+        X_opt, y_opt, TR_l, TR_l_angle, xnew, backtrack_l = ITR_GP_opt.RTO_routine()
+        backtrack_l                                       = [False, *backtrack_l]
+    X_opt_mc       += [X_opt]
+    y_opt_mc       += [y_opt]
+    TR_l_mc        += [TR_l]
+    xnew_mc        += [xnew]
+    backtrack_1_mc += [backtrack_l]
+print(2)
+pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('no_prior_with_exploration_ei.p','wb'))
+
+
+#-----------------Model---------
 
 np.random.seed(0)
 X_opt_mc = []
@@ -174,6 +198,10 @@ for i in range(30):
     backtrack_1_mc += [backtrack_l]
 print(2)
 pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('no_prior_with_exploration_ei.p','wb'))
+
+
+
+
 #-----------------------------------------------------------------------#
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#
 #---------------------------------------------#
