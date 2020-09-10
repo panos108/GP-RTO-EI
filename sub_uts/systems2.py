@@ -310,17 +310,158 @@ def obj_empty(u):
 class Bio_system:
 
 
-    def __init__(self):
-        self.nk, self.tf, self.x0, _, _ = self.specifications()
+    def __init__(self, nk=12):
+        self.nk, self.tf, self.x0, _, _ = self.specifications(nk)
         self.xd, self.xa, self.u, _, self.ODEeq, self.Aeq, self.u_min, self.u_max,\
         self.states, self.algebraics, self.inputs, self.nd, self.na, self.nu, \
         self.nmp,self. modparval= self.DAE_system()
         self.eval = self.integrator_model()
-        self.Sigma_v = [400.,1e5,1e-2]*diag(np.ones(self.nd))*1e-7
-    def specifications(self):
+        self.Sigma_v = [400.,1e5,1e-2]*diag(np.ones(self.nd))*0#1e-7
+    def specifications(self, nk):
         ''' Specify Problem parameters '''
         tf = 240.  # final time
-        nk = 12  # sampling points
+        # nk = 12  # sampling points
+        x0 = np.array([1., 150., 0.])
+        Lsolver = 'mumps'  # 'ma97'  # Linear solver
+        c_code = False  # c_code
+
+        return nk, tf, x0, Lsolver, c_code
+
+    def DAE_system(self):
+        # Define vectors with names of states
+        states = ['x', 'n', 'q']
+        nd = len(states)
+        xd = SX.sym('xd', nd)
+        for i in range(nd):
+            globals()[states[i]] = xd[i]
+
+        # Define vectors with names of algebraic variables
+        algebraics = []
+        na = len(algebraics)
+        xa = SX.sym('xa', na)
+        for i in range(na):
+            globals()[algebraics[i]] = xa[i]
+
+        # Define vectors with banes of input variables
+        inputs = ['L', 'Fn']
+        nu = len(inputs)
+        u = SX.sym("u", nu)
+        for i in range(nu):
+            globals()[inputs[i]] = u[i]
+
+        # Define model parameter names and values
+        modpar = ['u_m', 'k_s', 'k_i', 'K_N', 'u_d', 'Y_nx', 'k_m', 'k_sq',
+                  'k_iq', 'k_d', 'K_Np']
+        modparval = [0.0923 * 0.62, 178.85, 447.12, 393.10, 0.001, 504.49,
+                     2.544 * 0.62 * 1e-4, 23.51, 800.0, 0.281, 16.89]
+
+        nmp = len(modpar)
+        for i in range(nmp):
+            globals()[modpar[i]] = SX(modparval[i])
+
+        # Additive measurement noise
+        #    Sigma_v  = [400.,1e5,1e-2]*diag(np.ones(nd))*1e-6
+
+        # Additive disturbance noise
+        #    Sigma_w  = [400.,1e5,1e-2]*diag(np.ones(nd))*1e-6
+
+        # Initial additive disturbance noise
+        #    Sigma_w0 = [1.,150.**2,0.]*diag(np.ones(nd))*1e-3
+
+        # Declare ODE equations (use notation as defined above)
+
+        dx = u_m * L / (L + k_s + L ** 2. / k_i) * x * n / (n + K_N) - u_d * x
+        dn = - Y_nx * u_m * L / (L + k_s + L ** 2. / k_i) * x * n / (n + K_N) + Fn
+        dq = k_m * L / (L + k_sq + L ** 2. / k_iq) * x - k_d * q / (n + K_Np)
+
+        ODEeq = [dx, dn, dq]
+
+        # Declare algebraic equations
+        Aeq = []
+
+        # Define control bounds
+        u_min = np.array([120., 0.])  # lower bound of inputs
+        u_max = np.array([400., 40.])  # upper bound of inputs
+
+        # Define objective to be minimized
+        t = SX.sym('t')
+
+        return xd, xa, u, 0, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval
+
+    def integrator_model(self):
+        """
+        This function constructs the integrator to be suitable with casadi environment, for the equations of the model
+        and the objective function with variable time step.
+         inputs: NaN
+         outputs: F: Function([x, u, dt]--> [xf, obj])
+        """
+
+        xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval \
+            = self.DAE_system()
+
+        dae = {'x': vertcat(xd), 'z': vertcat(xa), 'p': vertcat(u),
+               'ode': vertcat(*ODEeq), 'alg': vertcat(*Aeq)}
+        opts = {'tf': self.tf / self.nk}  # interval length
+        F = integrator('F', 'idas', dae, opts)
+        # model = functools.partial(solver, np.zeros(np.shape(xa)))
+        return F
+
+    def bio_obj_ca(self, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2))
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
+
+
+
+        for i in range(self.nk):
+            xd = self.eval(x0=vertcat(np.array(x)), p=vertcat(u[i]))#self.eval(np.array([0.114805, 0.525604, 0.207296, 0.0923376, 0.0339309]), u)
+            x = np.array(xd['xf'].T)[0]
+
+
+        return -x[-1] + np.random.multivariate_normal([0.]*self.nd,np.array(self.Sigma_v))[-1]
+
+    def bio_con1_ca(self, n, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2))
+        u  = u1 * (self.u_max - self.u_min) + self.u_min
+
+
+
+        for i in range(n):
+            xd = self.eval(x0=vertcat(np.array(x)), p=vertcat(u[i]))#self.eval(np.array([0.114805, 0.525604, 0.207296, 0.0923376, 0.0339309]), u)
+            x = np.array(xd['xf'].T)[0]
+        x[1] += np.random.multivariate_normal([0.]*self.nd,np.array(self.Sigma_v))[1]
+        pcon1 = x[1]/800  - 1
+        return -pcon1#.toarray()[0]
+
+    def bio_con2_ca(self, n, u0):
+        x  = self.x0
+        u1 = np.array(u0).reshape((self.nk,2) )
+        u  = u1 *(self.u_max - self.u_min) + self.u_min
+
+
+
+        for i in range(n):
+            xd = self.eval(x0=vertcat(np.array(x)), p=vertcat(u[i]))#self.eval(np.array([0.114805, 0.525604, 0.207296, 0.0923376, 0.0339309]), u)
+            x = np.array(xd['xf'].T)[0]
+        x += np.random.multivariate_normal([0.]*self.nd,np.array(self.Sigma_v))
+        pcon1 = x[2]-(0.011 * x[0])
+        return -pcon1#.toarray()[0]
+
+class Bio_system_noiseless:
+
+
+    def __init__(self, nk=12):
+        self.nk, self.tf, self.x0, _, _ = self.specifications(nk)
+        self.xd, self.xa, self.u, _, self.ODEeq, self.Aeq, self.u_min, self.u_max,\
+        self.states, self.algebraics, self.inputs, self.nd, self.na, self.nu, \
+        self.nmp,self. modparval= self.DAE_system()
+        self.eval = self.integrator_model()
+        self.Sigma_v = [400.,1e5,1e-2]*diag(np.ones(self.nd))*0.
+    def specifications(self, nk):
+        ''' Specify Problem parameters '''
+        tf = 240.  # final time
+        # nk = 12  # sampling points
         x0 = np.array([1., 150., 0.])
         Lsolver = 'mumps'  # 'ma97'  # Linear solver
         c_code = False  # c_code
@@ -449,21 +590,21 @@ class Bio_system:
         return -pcon1#.toarray()[0]
 
 
-
 class Bio_model:
 
 
-    def __init__(self, empty =False):
-        self.nk, self.tf, self.x0, _, _ = self.specifications()
+    def __init__(self, nk=12, n_between=50, empty =False):
+        self.nk, self.tf, self.x0, _, _ = self.specifications(nk)
         self.xd, self.xa, self.u, _, self.ODEeq, self.Aeq, self.u_min, self.u_max,\
         self.states, self.algebraics, self.inputs, self.nd, self.na, self.nu, \
         self.nmp,self. modparval= self.DAE_system()
         self.eval = self.integrator_model()
+        self.n_between=n_between
         self.empty = empty
-    def specifications(self):
+    def specifications(self, nk):
         ''' Specify Problem parameters '''
         tf = 240.  # final time
-        nk = 12  # sampling points
+        # nk = 12  # sampling points
         x0 = np.array([1., 150., 0.])
         Lsolver = 'mumps'  # 'ma97'  # Linear solver
         c_code = False  # c_code
@@ -575,8 +716,11 @@ class Bio_model:
                 if x[j]<0:
                     x[j]=0
 
+        if self.empty:
+            return 0.
+        else:
 
-        return -x[-1]
+            return -x[-1]
 
     def bio_con1_ca(self, n, u0):
         x  = self.x0
@@ -601,7 +745,10 @@ class Bio_model:
                 if x[j]<0:
                     x[j]=0
         pcon1 = x[1]/800-1  # + 5e-4*np.random.normal(1., 1)
-        return -pcon1#.toarray()[0]
+        if self.empty:
+            return 0.
+        else:
+            return -pcon1#.toarray()[0]
 
     def bio_con2_ca(self, n, u0):
         x  = self.x0
@@ -632,7 +779,7 @@ class Bio_model:
         x  = self.x0
         u1 = np.array(u0).reshape((self.nk,2) )
         u  = u1 * (self.u_max - self.u_min) + self.u_min
-        DT = self.tf/self.nk/4
+        DT = self.tf/self.nk/self.n_between
 
 
         for i in range(self.nk):
@@ -646,7 +793,7 @@ class Bio_model:
 
             f = self.ODEeq
 
-            for j in range(4):
+            for j in range(self.n_between):
                 k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
                 k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
                 k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
@@ -660,8 +807,11 @@ class Bio_model:
                 if x[j]<0:
                     x[j]=0
 
+        if self.empty:
+            return 0.
+        else:
 
-        return -x[-1].toarray()[0][0]
+            return -x[-1].toarray()[0][0]
 
     def bio_con1_ca_RK4(self, n, u0):
         x  = self.x0
@@ -669,7 +819,7 @@ class Bio_model:
         u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
-        DT = self.tf/self.nk/4
+        DT = self.tf/self.nk/self.n_between
 
         for i in range(n):
             if np.any(x<0):
@@ -683,7 +833,7 @@ class Bio_model:
 
             f = self.ODEeq
 
-            for j in range(4):
+            for j in range(self.n_between):
                 k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
                 k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
                 k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
@@ -694,7 +844,10 @@ class Bio_model:
                 if x[j]<0:
                     x[j]=0
         pcon1 = x[1]/800 -1 # + 5e-4*np.random.normal(1., 1)
-        return -pcon1.toarray()[0][0]
+        if self.empty:
+            return 0.
+        else:
+            return -pcon1.toarray()[0][0]
 
     def bio_con2_ca_RK4(self, n, u0):
         x  = self.x0
@@ -702,7 +855,7 @@ class Bio_model:
         u  = u1 * (self.u_max - self.u_min) + self.u_min
 
 
-        DT = self.tf/self.nk/4
+        DT = self.tf/self.nk/self.n_between
 
         for i in range(n):
             if np.any(x<0):
@@ -716,7 +869,7 @@ class Bio_model:
 
             f = self.ODEeq
 
-            for j in range(4):
+            for j in range(self.n_between):
                 k1 = f(x0=vertcat(np.array(x)), p=vertcat(u[i]))['xdot']
                 k2 = f(x0=vertcat(np.array(x + DT / 2 * k1)),p=vertcat(u[i]))['xdot']
                 k3 = f(x0=vertcat(np.array(x + DT / 2 * k2)), p=vertcat(u[i]))['xdot']
@@ -726,11 +879,14 @@ class Bio_model:
             for j in range(self.nd):
                 if x[j]<0:
                     x[j]=0
-        pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)
-        return -pcon1.toarray()[0][0]
+        pcon1 = x[2]/(0.011 * x[0])-1  # + 5e-4*np.random.normal(1., 1)#
+        if self.empty:
+            return 0.
+        else:
+            return -pcon1.toarray()[0][0]
 
     def bio_model_ca(self):
-        M = 4  # RK4 steps per interval
+        M = self.n_between  # RK4 steps per interval
 
         X0 = SX.sym('X0', self.nd)
         U = SX.sym('U', self.nu,1)
@@ -876,7 +1032,7 @@ class Bio_model:
         return -0*pcon1.toarray()[0][0]
 
     def bio_model_ca_empty(self):
-        M = 4  # RK4 steps per interval
+        M = self.n_between  # RK4 steps per interval
 
         X0 = SX.sym('X0', self.nd)
         U = SX.sym('U', self.nu,1)

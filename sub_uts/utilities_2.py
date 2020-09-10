@@ -490,7 +490,7 @@ class ITR_GP_RTO:
             obj_f = GP.GP_inference_np(xk + d)
             return obj_model((xk + d).flatten()) + obj_f[0] - 3 * np.sqrt(obj_f[1])
         elif obj == 3:
-            fs = self.obj_max
+            fs = -self.obj_min#self.obj_max
             obj_f = GP.GP_inference_np(xk + d)
             mean = obj_model((xk + d).flatten()) + obj_f[0]
             Delta = fs - mean
@@ -872,6 +872,15 @@ class ITR_GP_RTO:
 
         return H_norm, H_inv
 
+
+    def find_min_so_far(self,funcs_system, X_opt):
+            # ynew[0,ii] = funcs[ii](np.array(xnew[:]).flatten())
+        min = -1.
+        for i in range(len(X_opt)):
+                y= funcs_system[0](np.array(X_opt[i]).flatten())
+                if y< min:
+                    min =y
+        return min
     ######################################
     # --- Real-Time Optimization alg --- #
     ######################################
@@ -931,6 +940,7 @@ class ITR_GP_RTO:
         # renaming data
         X_opt = np.copy(Xtrain)
         y_opt = np.copy(ytrain)
+        self.obj_min = self.find_min_so_far(funcs_system, X_opt)
 
         # --- TR lists --- #
         TR_l = ['error'] * (n_iter + 1)
@@ -992,6 +1002,7 @@ class ITR_GP_RTO:
             # adding new point to sample
             X_opt = np.vstack((X_opt, xnew))
             y_opt = np.hstack((y_opt, ynew.T))
+            self.obj_min = self.find_min_so_far(funcs_system, X_opt)
 
             # --- Update TR --- #
             self.Delta0, xnew, xk = Step_constraint(self.Delta0, xk, xnew, GP_obj, i_rto)  # adjust TR

@@ -726,3 +726,72 @@ def plot_obj_noise(obj):
     plt.savefig('figs_noise_WO/noexplore_prior.png', dpi=400)
     plt.close()
     return print(1)
+
+
+#
+#
+# X_opt_mc, y_opt_mc, TR_l_mc, xnew_mc, backtrack_1_mc = pickle.load(
+#     open('prior_with_exploration_ei_no_red_constraint_violation.p', 'rb'))
+# plant = Bio_system(nk=6)
+# cons_system = []  # l.WO_obj_ca
+# for k in range(plant.nk):
+#     cons_system.append(functools.partial(plant.bio_con1_ca, k + 1))
+#     cons_system.append(functools.partial(plant.bio_con2_ca, k + 1))
+#
+# obj_system = plant.bio_obj_ca
+# cons_h = np.zeros([8, 63, 12])
+# obj = np.zeros([8, 63])
+# for i in range(8):
+#     max_obj = 0.
+#
+#     for j in range(63):
+#         for ik in range(12):
+#             cons_h[i, j, ik] = cons_system[ik](np.array(X_opt_mc)[i, j])
+#         if j >= 13:
+#             # for k in range(100):
+#             p = 0.
+#             if  (cons_h[i, j,:] > 1e-7).all():  # not(np.array(backtrack_1_mc)[i,j-13]):#cons_system[ik](np.array(X_opt_mc)[i,j-k])>0:
+#                 #         p+=1
+#                 print(cons_h[i, j, :] > 1e-7)
+#                 if -obj_system(np.array(X_opt_mc)[i, j]) > max_obj:
+#                     max_obj = -obj_system(np.array(X_opt_mc)[i, j])
+#                     obj[i, j] = max_obj
+#                 else:
+#                     obj[i, j] = max_obj
+#             else:
+#                 obj[i, j] = max_obj
+#
+#                 # if p==1 or j== 13:
+#                 #     obj[i,j] = obj_system(np.array(X_opt_mc)[i,j-k])
+#                 #     break
+#
+#         else:
+#             obj[i, j] = -obj_system(np.array(X_opt_mc)[i, j])
+
+# csfont = {'fontname': 'Times New Roman'}
+#
+# # plt.rcParams['font.sans-serif'] = "Arial"
+# plt.rcParams['font.family'] = "Times New Roman"
+# ni = 50
+# ft = int(20)
+# font = {'size': ft}
+# plt.rc('font', **font)
+# plt.rc('text', usetex=True)
+# params = {'legend.fontsize': 15,
+#           'legend.handlelength': 2}
+# plt.rcParams.update(params)
+# plt.plot(np.linspace(1, 50, 50),obj[0,13:].T,color='#AA3939', label='Proposed')
+# plt.plot(np.linspace(1, 50, 50),obj[[0,1,2,3,4,5,7],13:].T,color='#AA3939')
+#
+# plt.plot(np.linspace(1, 50, 50), [0.171] * ni, 'k--', label='Real Optimum')
+#
+# plt.xlabel('RTO-iter')
+# plt.ylabel('Objective')
+# plt.xlim(1, 50)
+# plt.legend()
+# plt.tick_params(right=True, top=True, left=True, bottom=True)
+# plt.tick_params(axis="y", direction="in")
+# plt.tick_params(axis="x", direction="in")
+# plt.tight_layout()
+# plt.savefig('figs_WO/EI_bio.png', dpi=400)
+# plt.close()

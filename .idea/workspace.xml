@@ -26,33 +26,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py">
+        <entry file="file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="33">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
+            <state relative-caret-position="171">
+              <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <element signature="e#3977#6976#0" />
-                <element signature="e#7386#9251#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_4.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="991" column="17" selection-start-line="991" selection-start-column="17" selection-end-line="991" selection-end-column="17" />
+            <state relative-caret-position="108">
+              <caret line="1066" column="30" lean-forward="true" selection-start-line="1066" selection-start-column="17" selection-end-line="1066" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_4.py">
+        <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="1158" column="40" lean-forward="true" selection-start-line="1158" selection-start-column="40" selection-end-line="1158" selection-end-column="40" />
+            <state relative-caret-position="88">
+              <caret line="500" column="17" lean-forward="true" selection-start-line="500" selection-start-column="17" selection-end-line="500" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -60,28 +58,25 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sub_uts/systems2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="318" column="17" selection-start-line="318" selection-start-column="13" selection-end-line="318" selection-end-column="17" />
-              <folding>
-                <element signature="e#20097#21187#0" />
-                <element signature="e#21235#22264#0" />
-                <element signature="e#22312#23352#0" />
-                <element signature="e#23512#24043#0" />
-              </folding>
+            <state relative-caret-position="-1876">
+              <caret line="322" column="36" selection-start-line="322" selection-start-column="36" selection-end-line="322" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plots_RTO.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#31#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
+        <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/with_prior_with_exploration_ucbContour_prob.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/noexplore_prior.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/EXplore_no_explore_obj.png">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
     </leaf>
@@ -95,36 +90,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>pcon1</find>
-      <find>nmpc</find>
-      <find>construct_opt_ca</find>
-      <find>self.</find>
-      <find>SELF.DELTA0**</find>
-      <find>objec</find>
-      <find>RK4</find>
-      <find>model</find>
-      <find>order</find>
-      <find>SELF.DELTA0</find>
-      <find>ob</find>
-      <find>obj</find>
-      <find>System_Cons_check</find>
-      <find>self.Delta0</find>
-      <find>Step_constraint</find>
-      <find>Delta0</find>
-      <find>return De</find>
-      <find>objective:</find>
-      <find>obj ==</find>
-      <find>obje</find>
-      <find>check</find>
+      <find>calc_cov_sample</find>
+      <find>if Fal</find>
+      <find>self.n_</find>
       <find>slack</find>
-      <find>cons_</find>
-      <find>cons_c</find>
-      <find>Sigma_v</find>
-      <find>INFERENCE_NP</find>
-      <find>specifications</find>
-      <find>RKT</find>
-      <find>Adjust_TR</find>
-      <find>sigm</find>
+      <find>if De</find>
+      <find>ynew</find>
+      <find>Delta0 =</find>
+      <find>mat</find>
+      <find>RBF</find>
+      <find>episo</find>
+      <find>backtrack</find>
+      <find>-5</find>
+      <find>ca</find>
+      <find>Delta0</find>
+      <find>Delta0 &lt;</find>
+      <find>Delta0&lt;</find>
+      <find>self.</find>
+      <find>self.constr</find>
+      <find>System_Cons_check</find>
+      <find>gamma_red</find>
+      <find>empty</find>
+      <find>quanti</find>
+      <find>Bio_s</find>
+      <find>ca_</find>
+      <find>epi</find>
+      <find>matern</find>
+      <find>X_opt</find>
+      <find>obj_max</find>
+      <find>find_min_so_far</find>
+      <find>obj_min</find>
     </findStrings>
     <replaceStrings>
       <replace>Benoit_Model</replace>
@@ -137,6 +132,8 @@
       <replace>u1 = np.array(u0).reshape((self.nk,2), order='F' )</replace>
       <replace />
       <replace>return -pcon1</replace>
+      <replace>Matern52</replace>
+      <replace>0.1</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -151,23 +148,24 @@
         <option value="$PROJECT_DIR$/no_prior_no_exploration_fix_sigma - to be impl/utilities.py" />
         <option value="$PROJECT_DIR$/with_prior_with_exploration/utilities.py" />
         <option value="$PROJECT_DIR$/utilities_2.py" />
-        <option value="$PROJECT_DIR$/plots_RTO.py" />
         <option value="$PROJECT_DIR$/run_WO/main_simple.py" />
         <option value="$PROJECT_DIR$/run_simple/main_simple.py" />
-        <option value="$PROJECT_DIR$/sub_uts/utilities_2.py" />
         <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
         <option value="$PROJECT_DIR$/sub_uts/systems.py" />
-        <option value="$PROJECT_DIR$/sub_uts/utilities_4.py" />
-        <option value="$PROJECT_DIR$/sub_uts/systems2.py" />
         <option value="$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py" />
+        <option value="$PROJECT_DIR$/run_Bio/samples_eval_gen.py" />
+        <option value="$PROJECT_DIR$/plots_RTO.py" />
+        <option value="$PROJECT_DIR$/sub_uts/utilities_4.py" />
+        <option value="$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py" />
+        <option value="$PROJECT_DIR$/sub_uts/systems2.py" />
+        <option value="$PROJECT_DIR$/sub_uts/utilities_2.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="240" />
-    <option name="y" value="127" />
-    <option name="width" value="1440" />
-    <option name="height" value="765" />
+    <option name="x" value="-12" />
+    <option name="width" value="1932" />
+    <option name="height" value="1032" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -184,11 +182,6 @@
             <path>
               <item name="GP-RTO-EI" type="b2602c69:ProjectViewProjectNode" />
               <item name="GP-RTO-EI" type="462c0819:PsiDirectoryNode" />
-              <item name="run_WO" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="GP-RTO-EI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="GP-RTO-EI" type="462c0819:PsiDirectoryNode" />
               <item name="sub_uts" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -199,10 +192,14 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DDPG" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\run_Bio" />
+      <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\sub_uts" />
       <recent name="C:\Users\Panos\OneDrive - University College London\Documents\GitHub\GP-RTO-EI\run_WO" />
@@ -223,7 +220,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="main_WO_prior_EI2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="main_WO_prior_EI" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="gp-rto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -235,7 +232,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_WO/main_WO_prior_EI.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -270,20 +267,20 @@
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7972028" visible="true" weight="0.15806195" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7967033" visible="true" weight="0.18506752" />
       <window_info id="Structure" order="1" sideWeight="0.20304568" side_tool="true" weight="0.17334495" />
-      <window_info id="Favorites" order="2" sideWeight="0.2027972" side_tool="true" visible="true" weight="0.15806195" />
+      <window_info id="Favorites" order="2" sideWeight="0.2032967" side_tool="true" weight="0.15806195" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.5319149" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32978722" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.2393617" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4964539" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32978722" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32978722" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32978722" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32978722" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32978722" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32978722" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -323,19 +320,29 @@
           <option name="timeStamp" value="207" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py</url>
+          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
           <line>199</line>
           <option name="timeStamp" value="220" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py</url>
+          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
           <line>125</line>
           <option name="timeStamp" value="259" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py</url>
-          <line>113</line>
-          <option name="timeStamp" value="266" />
+          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
+          <line>119</line>
+          <option name="timeStamp" value="333" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
+          <line>186</line>
+          <option name="timeStamp" value="370" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
+          <line>31</line>
+          <option name="timeStamp" value="378" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -378,16 +385,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_simple/SimpleModel_Bio_v2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="12" column="40" selection-start-line="12" selection-start-column="40" selection-end-line="12" selection-end-column="40" />
-          <folding>
-            <element signature="e#113#144#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/run_simple/SimpleModel_Bio_v2.py" />
     <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/matplotlib/axes/_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="99">
@@ -430,25 +428,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="29" column="33" lean-forward="true" selection-start-line="29" selection-start-column="33" selection-end-line="29" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_3.py" />
     <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/numpy/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="137" selection-start-line="137" selection-end-line="137" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -469,59 +451,87 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plots_RTO.py">
+    <entry file="file://$PROJECT_DIR$/../../../RL_bio/Dynamic_system.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
+        <state relative-caret-position="160">
+          <caret line="8" column="30" selection-end-line="95" />
           <folding>
-            <element signature="e#0#31#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Anaconda3/envs/trial/Lib/site-packages/casadi/casadi.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="16672" selection-start-line="16672" selection-end-line="16672" />
+        <state relative-caret-position="83">
+          <caret line="12213" selection-start-line="12213" selection-end-line="12213" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+    <entry file="file://$PROJECT_DIR$/run_Bio/samples_eval_gen.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="991" column="17" selection-start-line="991" selection-start-column="17" selection-end-line="991" selection-end-column="17" />
+        <state relative-caret-position="87">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI2.py">
+    <entry file="file://$PROJECT_DIR$/plots_RTO.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
+        <state relative-caret-position="205">
+          <caret line="769" lean-forward="true" selection-start-line="730" selection-end-line="769" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#3977#6976#0" />
-            <element signature="e#7386#9251#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/with_prior_with_exploration_ucbContour_prob.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/noexplore_prior.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/figs_WO/EXplore_no_explore_obj.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="137" selection-start-line="137" selection-end-line="137" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sub_uts/systems2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="318" column="17" selection-start-line="318" selection-start-column="13" selection-end-line="318" selection-end-column="17" />
-          <folding>
-            <element signature="e#20097#21187#0" />
-            <element signature="e#21235#22264#0" />
-            <element signature="e#22312#23352#0" />
-            <element signature="e#23512#24043#0" />
-          </folding>
+        <state relative-caret-position="-1876">
+          <caret line="322" column="36" selection-start-line="322" selection-start-column="36" selection-end-line="322" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sub_uts/utilities_4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="1158" column="40" lean-forward="true" selection-start-line="1158" selection-start-column="40" selection-end-line="1158" selection-end-column="40" />
+        <state relative-caret-position="108">
+          <caret line="1066" column="30" lean-forward="true" selection-start-line="1066" selection-start-column="17" selection-end-line="1066" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="500" column="17" lean-forward="true" selection-start-line="500" selection-start-column="17" selection-end-line="500" selection-end-column="17" />
         </state>
       </provider>
     </entry>

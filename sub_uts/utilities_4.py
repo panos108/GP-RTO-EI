@@ -41,7 +41,7 @@ class GP_model:
 
         # determine hyperparameters
         self.hypopt, self.invKopt = self.determine_hyperparameters(noise)
-        self.meanfcn, self.varfcn = self.GP_predictor()
+        self.meanfcn, self.varfcn = self.GP_predictor(kernel=kernel)
         #############################
 
     # --- Covariance Matrix --- #
@@ -78,9 +78,24 @@ class GP_model:
         '''
         # internal parameters
         nx_dim = self.nx_dim
+        kernel = self.kernel
+        if kernel == 'RBF':
+            dist = cdist(Xnorm, xnorm.reshape(1,nx_dim), 'seuclidean', V=ell)**2
+            cov_matrix = sf2 * np.exp(-.5*dist)
+        elif kernel =='Matern32':
+            dist = cdist(Xnorm, xnorm.reshape(1,nx_dim), 'seuclidean', V=ell)
+            t_1 = 1 + 3**0.5*dist
+            t_2 = np.exp(-3**0.5*dist)
+            cov_matrix = sf2 * t_1 * t_2
+        elif kernel == 'Matern52':
+            dist = cdist(Xnorm, xnorm.reshape(1,nx_dim), 'seuclidean', V=ell)
+            t_1  = 1 + 5**0.5* dist + 5/3*dist**2
+            t_2  = np.exp(-5**2*dist)
+            cov_matrix = sf2 * t_1 * t_2
+        else:
+            print('ERROR no kernel with name ', kernel)
+            cov_matrix = 0.
 
-        dist = cdist(Xnorm, xnorm.reshape(1, nx_dim), 'seuclidean', V=ell) ** 2
-        cov_matrix = sf2 * np.exp(-.5 * dist)
 
         return cov_matrix
 
@@ -128,8 +143,8 @@ class GP_model:
         kernel, ny_dim = self.kernel, self.ny_dim
         Cov_mat = self.Cov_mat
 
-        lb = np.array([-5.] * (nx_dim + 1) + [-8.])  # lb on parameters (this is inside the exponential)
-        ub = np.array([5.] * (nx_dim + 1) + [-4.])  # lb on parameters (this is inside the exponential)
+        lb = np.array([-5.] * (nx_dim + 1) + [-10.])  # lb on parameters (this is inside the exponential)
+        ub = np.array([8.] * (nx_dim + 1) + [-4.])  # lb on parameters (this is inside the exponential)
 
 
 
@@ -179,11 +194,11 @@ class GP_model:
     ########################
     # --- GP inference --- #
     ########################
-    def GP_predictor(self):# , X,Y):
+    def GP_predictor(self, kernel='RBF'):# , X,Y):
             nd, invKopt, hypopt = self.ny_dim, self.invKopt, self.hypopt
             Ynorm, Xnorm = SX(DM(self.Y_norm)), SX(DM(self.X_norm))
             ndat = Xnorm.shape[0]
-            nX, covSEfcn = self.nx_dim, self.covSEard()
+            nX, covSEfcn = self.nx_dim, self.covSEard(kernel=kernel)
             stdX, stdY, meanX, meanY = SX(self.X_std), SX(self.Y_std), SX(self.X_mean), SX(self.Y_mean)
             #        nk     = 12
             x = SX.sym('x', nX)
@@ -221,14 +236,29 @@ class GP_model:
 
             return meanfcn, varfcn  # , meanfcn2, varfcnsd
 
-    def covSEard(self):
+    def covSEard(self, kernel):
         nx_dim = self.nx_dim
         ell    = SX.sym('ell', nx_dim)
         sf2    = SX.sym('sf2')
         x, z   = SX.sym('x', nx_dim), SX.sym('z', nx_dim)
-        dist   = sum1((x - z)**2 / ell)
-        covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[sf2*exp(-.5*dist)])
-
+        if kernel=='RBF':
+            dist   = sum1((x - z)**2 / ell)
+            covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[sf2*exp(-.5*dist)])
+        elif kernel =='Matern32':
+            dist   = sqrt(sum1((x - z)**2 / ell))
+            t_1 = 1 + 3**0.5*dist
+            t_2 = np.exp(-3**0.5*dist)
+            cov_matrix = sf2 * t_1 * t_2
+            covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[cov_matrix])
+        elif kernel == 'Matern52':
+            dist   = sqrt(sum1((x - z)**2 / ell))
+            t_1  = 1 + 5**0.5* dist + 5/3*dist**2
+            t_2  = np.exp(-5**2*dist)
+            cov_matrix = sf2 * t_1 * t_2
+            covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[cov_matrix])
+        else:
+            print('ERROR no kernel with name ', kernel)
+            covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[0.])
         return covSEfcn
 
 
@@ -345,7 +375,7 @@ class ITR_GP_RTO:
                  Delta0, Delta_max, eta0, eta1, gamma_red, gamma_incr,
                  n_iter, data, bounds, obj_setting=2, noise=None, multi_opt=5, multi_hyper=10, TR_scaling=True,
                  TR_curvature=True, store_data=True, inner_TR=False, scale_inputs=False,GP_casadi=True,
-                 model=None):
+                 model=None,kernel='Matern32'):
         '''
         data = ['int', bound_list=[[0,10],[-5,5],[3,8]], samples_number] <=> d = ['int', np.array([[-12, 8]]), 3]
         data = ['data0', Xtrain]
@@ -368,6 +398,7 @@ class ITR_GP_RTO:
         self.gamma_red, self.gamma_incr = gamma_red, gamma_incr
         self.inner_TR = inner_TR
         self.scale_inputs = scale_inputs
+        self.kernel=kernel
         # other definitions
         if scale_inputs:
             self.TRmat = np.linalg.inv(np.diag(bounds[:, 1] - bounds[:, 0]))
@@ -680,17 +711,17 @@ class ITR_GP_RTO:
                     Delta0 = Delta0 * gamma_red
                 # Note: xk = xnew this is done later in the code
         if rho < eta0:
-                # xnew                    = xk
-                # self.backtrack_l[i_rto] = True
-                # print('rho<eta0 -- backtracking')
-                Delta0 = Delta0 * gamma_red
+                xnew                    = xk
+                self.backtrack_l[i_rto] = True
+                print('rho<eta0 -- backtracking')
+                Delta0 = Delta0 #* gamma_red
         # else:
         #     xnew = xk
         #     Delta0 = Delta0 * gamma_red
         #     self.backtrack_l[i_rto] = True
         #     print('plant_iplus<plant_i -- backtracking')
-        if Delta0<0.1:
-            Delta0 = 0.1
+        # if Delta0<0.1:
+        #     Delta0 = 0.1
 
 
 
@@ -790,17 +821,17 @@ class ITR_GP_RTO:
             xnew = xk
             self.backtrack_l[i_rto] = True
             print('Constraint violated -- backtracking')
-            Delta0 = Delta0 * self.gamma_red
+            Delta0 = Delta0 #* self.gamma_red
 
-            if Delta0 < 0.1:
-                Delta0 = 0.1
+            # if Delta0 < 0.1:
+            #     Delta0 = 0.1
 
             return Delta0 , xnew, xk
 
         else:
             Delta0, xnew, xk = Adjust_TR(Delta0, xk, xnew, GP_obj, i_rto)
-            if Delta0 <0.1:
-                Delta0 = Delta0
+            # if Delta0 < 0.1:
+            #     Delta0 = 0.1#Delta0
             return Delta0, xnew, xk
 
     ########################################
@@ -819,10 +850,10 @@ class ITR_GP_RTO:
         # --- objective function GP --- #
         self.obj_max = np.max(ytrain[0, :].reshape(ndat, 1))
         if self.noise[0] == None:
-            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), 'RBF',
+            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), self.kernel,
                           multi_hyper=multi_hyper, var_out=True)
         else:
-            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), 'RBF',
+            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), self.kernel,
                           multi_hyper=multi_hyper, var_out=True, noise = self.noise[0])
         GP_con = [0] * ng  # Gaussian processes that output mistmatch (functools)
         GP_con_2 = [0] * ng  # Constraints for the NLP
@@ -835,10 +866,10 @@ class ITR_GP_RTO:
 
         for igp in range(ng):
             if self.noise[0] == None:
-                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
+                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), self.kernel,
                                    multi_hyper=multi_hyper, var_out=False)
             else:
-                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
+                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), self.kernel,
                                    multi_hyper=multi_hyper, var_out=False, noise = self.noise[igp+1])
 
             GP_con_2[igp] = functools.partial(mistmatch_con, xk, GP_con[igp],
@@ -915,10 +946,10 @@ class ITR_GP_RTO:
         # --- objective function GP --- #
         self.obj_max = np.max(ytrain[0, :].reshape(ndat, 1))
         if self.noise[0] == None:
-            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), 'RBF',
+            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), self.kernel,
                           multi_hyper=multi_hyper, var_out=True, GP_casadi=True)
         else:
-            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), 'RBF',
+            GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), self.kernel,
                           multi_hyper=multi_hyper, var_out=True, noise = self.noise[0], GP_casadi=True)
         GP_con = [0] * ng  # Gaussian processes that output mistmatch (functools)
         GP_con_2 = [0] * ng  # Constraints for the NLP
@@ -931,10 +962,10 @@ class ITR_GP_RTO:
 
         for igp in range(ng):
             if self.noise[0] == None:
-                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
+                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), self.kernel,
                                    multi_hyper=multi_hyper, var_out=False, GP_casadi=True)
             else:
-                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), 'RBF',
+                GP_con[igp] = GP_model(Xtrain, ytrain[igp + 1, :].reshape(ndat, 1), self.kernel,
                                    multi_hyper=multi_hyper, var_out=False,
                                        noise = self.noise[igp+1], GP_casadi=True)
 
@@ -960,7 +991,7 @@ class ITR_GP_RTO:
 
     def construct_opt_ca(self, d_init, uk, GP_obj, GP_con, model):
         u_init = d_init.reshape(uk.shape) + uk
-        x0 = np.array([1., 150., 0.])
+        x0 = model.x0#np.array([1., 150., 0.])
         f = model.bio_model_ca()
         x = MX.sym('x_0',3)
         w = []
@@ -974,44 +1005,44 @@ class ITR_GP_RTO:
         U = []
         w += [x]
 
-        lbw.extend([0]*3)
-        ubw.extend([1000]*3)
+        lbw.extend([0]*model.nd)
+        ubw.extend([1000]*model.nd)
         w0.extend(x0)
 
 
         g   += [x - x0]
-        lbg.extend([-0.00001]*3)
-        ubg.extend([0.00001]*3)
+        lbg.extend([-0.00001]*model.nd)
+        ubg.extend([0.00001]*model.nd)
         X  = []
         gg = []
         xx = []
         yy = []
         zz = []
-        for i in range(12):
-            u = MX.sym('u_'+str(i), 2)
+        for i in range(model.nk):
+            u = MX.sym('u_'+str(i), model.nu)
             w += [u]
-            lbw.extend([0] * 2)
-            ubw.extend([1] * 2)
-            w0.extend(u_init[2*i:2*i+2])
+            lbw.extend([0] * model.nu)
+            ubw.extend([1] * model.nu)
+            w0.extend(u_init[model.nu*i:model.nu*i+model.nu])
             U += [u]
-            x1 = f(x,u)
-            x = MX.sym('x_'+str(i+1),3)
+            x1 = f(x,u)* (not(model.empty)).real
+            x = MX.sym('x_'+str(i+1),model.nd)
             X += [x1]
             g += [x1-x]
-            lbg.extend([-0.00001] * 3)
-            ubg.extend([0.00001] * 3)
+            lbg.extend([-0.00001]*model.nd)
+            ubg.extend([0.00001]*model.nd)
 
             w += [x]
 
-            lbw.extend([0] * 3)
-            ubw.extend([inf] * 3)
+            lbw.extend([0]*model.nd)
+            ubw.extend([inf]*model.nd)
             w0.extend(x0)
             gg += [model.bio_con1_ca_f(x1)]
             gg += [model.bio_con2_ca_f(x1)]
         Sum_slack = 0
-        for i in range(24):
+        for i in range(model.nk*model.nu):
 
-            mean, var = GP_con[i].GP_predictor()
+            mean, var = GP_con[i].GP_predictor(kernel=self.kernel)
             slack = MX.sym('s_'+str(i))
             # w += [slack]
             # w0.extend([0.])
@@ -1020,15 +1051,32 @@ class ITR_GP_RTO:
             # Sum_slack += (slack**2)
             g += [mean(vertcat(*U))+ gg[i]]# + slack]
             xx+= [mean(vertcat(*U))]
-            lbg.extend([-1e-8])
+            lbg.extend([0.])
             ubg.extend([inf])
 
         g += [sum1((vertcat(*U)-uk.reshape(-1,1))**2)-self.Delta0 ** 2]
         lbg.extend([-inf])
         ubg.extend([0.])
-        mean_obj, var_obj = GP_obj.GP_predictor()
-        obj = model.bio_obj_ca_f(X[-1]) + mean_obj(vertcat(*U))\
-              - 3* sqrt(var_obj(vertcat(*U)))# + 1e4*Sum_slack
+        mean_obj, var_obj = GP_obj.GP_predictor(kernel=self.kernel)
+        if self.obj == 1:
+            obj = model.bio_obj_ca_f(X[-1]) + mean_obj(vertcat(*U))
+        elif self.obj == 2:
+            obj = model.bio_obj_ca_f(X[-1]) + mean_obj(vertcat(*U)) \
+                  - 3 * sqrt(var_obj(vertcat(*U)))  # + 1e4*Sum_slack
+        elif self.obj == 3:
+            fs = -self.obj_min
+            obj_f = mean_obj(vertcat(*U))
+            mean =  model.bio_obj_ca_f(X[-1])+ obj_f
+            Delta = fs - mean
+            sigma = sqrt(var_obj(vertcat(*U)))
+            # Delta_p = np.max(mean(X) - fs)
+            # if sigma == 0.:
+            #     Z = 0.
+            # else:
+            Z = (Delta) / sigma
+            norm_pdf = exp(-Z**2/2)/sqrt(2*np.pi)
+            norm_cdf = 0.5 * (1+ erf(Z/sqrt(2)))
+            obj = -(sigma * norm_pdf + Delta * norm_cdf)
         yy += [model.bio_obj_ca_f(X[-1])]
         zz += [mean_obj(vertcat(*U))]
         opts                                  = {}
@@ -1046,6 +1094,17 @@ class ITR_GP_RTO:
                                 ['w'], ['x', 'u' ,'gg', 'gpc', 'objm', 'gpobj'])
 
         return problem, w0, lbw, ubw, lbg, ubg, trajectories, opts
+
+
+
+    def find_min_so_far(self,funcs_system, X_opt):
+            # ynew[0,ii] = funcs[ii](np.array(xnew[:]).flatten())
+        min = -1.
+        for i in range(len(X_opt)):
+                y= funcs_system[0](np.array(X_opt[i]).flatten())
+                if y< min:
+                    min =y
+        return min
     ######################################
     # --- Real-Time Optimization alg --- #
     ######################################
@@ -1105,6 +1164,7 @@ class ITR_GP_RTO:
         # renaming data
         X_opt = np.copy(Xtrain)
         y_opt = np.copy(ytrain)
+        self.obj_min = self.find_min_so_far(funcs_system, X_opt)
 
         # --- TR lists --- #
         TR_l = ['error'] * (n_iter + 1)
@@ -1177,7 +1237,7 @@ class ITR_GP_RTO:
             # adding new point to sample
             X_opt = np.vstack((X_opt, xnew))
             y_opt = np.hstack((y_opt, ynew.T))
-
+            self.obj_min = self.find_min_so_far(funcs_system, X_opt)
             # --- Update TR --- #
             self.Delta0, xnew, xk = Step_constraint(self.Delta0, xk, xnew, GP_obj, i_rto)  # adjust TR
 
