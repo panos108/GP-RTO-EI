@@ -92,61 +92,6 @@ if not(os.path.exists('figs_noise_WO')):
 plot_obj(compute_obj)
 plot_obj_noise(compute_obj)
 
-np.random.seed(0)
-X_opt_mc = []
-y_opt_mc = []
-TR_l_mc = []
-xnew_mc = []
-backtrack_1_mc = []
-
-for i in range(30):
-
-    plant = WO_system()
-
-    obj_model      = obj_empty#model.WO_obj_ca
-    cons_model     = [con_empty, con_empty]
-    obj_system     = plant.WO_obj_sys_ca
-    cons_system    = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
-
-
-
-
-    n_iter         = 20
-    bounds         = [[4.,7.],[70.,100.]]
-    Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
-    #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
-    samples_number = Xtrain.shape[0]
-    data           = ['data0', Xtrain]
-    u0             = np.array([6.9,83])
-
-    Delta0         = 0.25
-    Delta_max      =0.7; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
-    TR_scaling_    = False
-    TR_curvature_  = False
-    inner_TR_      = False
-    noise = None#[0.5**2, 5e-8, 5e-8]
-
-
-    ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
-                                    Delta_max, eta0, eta1, gamma_red, gamma_incr,
-                                    n_iter, data, np.array(bounds),obj_setting=3, noise=noise, multi_opt=30,
-                                    multi_hyper=15, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
-                                    store_data=True, inner_TR=inner_TR_, scale_inputs=True)
-
-    print('Episode: ',i)
-    if not TR_curvature_:
-        X_opt, y_opt, TR_l, xnew, backtrack_l             = ITR_GP_opt.RTO_routine()
-        backtrack_l                                       = [False, *backtrack_l]
-    else:
-        X_opt, y_opt, TR_l, TR_l_angle, xnew, backtrack_l = ITR_GP_opt.RTO_routine()
-        backtrack_l                                       = [False, *backtrack_l]
-    X_opt_mc       += [X_opt]
-    y_opt_mc       += [y_opt]
-    TR_l_mc        += [TR_l]
-    xnew_mc        += [xnew]
-    backtrack_1_mc += [backtrack_l]
-print(2)
-pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('no_prior_with_exploration_ei.p','wb'))
 #-----------------------------------------------------------------------#
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#
 #---------------------------------------------#
@@ -205,7 +150,73 @@ for i in range(30):
     xnew_mc        += [xnew]
     backtrack_1_mc += [backtrack_l]
 print(2)
-pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_with_exploration_ei.p','wb'))
+pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_with_exploration_ei_new2.p','wb'))
+
+
+
+
+
+
+
+
+
+
+
+np.random.seed(0)
+X_opt_mc = []
+y_opt_mc = []
+TR_l_mc = []
+xnew_mc = []
+backtrack_1_mc = []
+
+for i in range(30):
+
+    plant = WO_system()
+
+    obj_model      = obj_empty#model.WO_obj_ca
+    cons_model     = [con_empty, con_empty]
+    obj_system     = plant.WO_obj_sys_ca
+    cons_system    = [plant.WO_con1_sys_ca, plant.WO_con2_sys_ca]
+
+
+
+
+    n_iter         = 20
+    bounds         = [[4.,7.],[70.,100.]]
+    Xtrain         = np.array([[5.7, 74.],[6.35, 74.9],[6.6,75.],[6.75,79.]]) #U0
+    #Xtrain         = np.array([[7.2, 74.],[7.2, 80],[6.7,75.]])#,[6.75,83.]]) #U0
+    samples_number = Xtrain.shape[0]
+    data           = ['data0', Xtrain]
+    u0             = np.array([6.9,83])
+
+    Delta0         = 0.25
+    Delta_max      =0.7; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2;
+    TR_scaling_    = False
+    TR_curvature_  = False
+    inner_TR_      = False
+    noise = None#[0.5**2, 5e-8, 5e-8]
+
+
+    ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
+                                    Delta_max, eta0, eta1, gamma_red, gamma_incr,
+                                    n_iter, data, np.array(bounds),obj_setting=3, noise=noise, multi_opt=30,
+                                    multi_hyper=15, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
+                                    store_data=True, inner_TR=inner_TR_, scale_inputs=True)
+
+    print('Episode: ',i)
+    if not TR_curvature_:
+        X_opt, y_opt, TR_l, xnew, backtrack_l             = ITR_GP_opt.RTO_routine()
+        backtrack_l                                       = [False, *backtrack_l]
+    else:
+        X_opt, y_opt, TR_l, TR_l_angle, xnew, backtrack_l = ITR_GP_opt.RTO_routine()
+        backtrack_l                                       = [False, *backtrack_l]
+    X_opt_mc       += [X_opt]
+    y_opt_mc       += [y_opt]
+    TR_l_mc        += [TR_l]
+    xnew_mc        += [xnew]
+    backtrack_1_mc += [backtrack_l]
+print(2)
+pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('no_prior_with_exploration_ei.p','wb'))
 #-----------------------------------------------------------------------#
 #----------3) EI-PRIOR-KNOWN NOISE----------#
 #---------------------------------------------#
