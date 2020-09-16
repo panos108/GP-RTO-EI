@@ -1064,10 +1064,10 @@ class ITR_GP_RTO:
             obj = model.bio_obj_ca_f(X[-1]) + mean_obj(vertcat(*U)) \
                   - 3 * sqrt(var_obj(vertcat(*U)))  # + 1e4*Sum_slack
         elif self.obj == 3:
-            fs = -self.obj_min
+            fs = self.obj_min
             obj_f = mean_obj(vertcat(*U))
             mean =  model.bio_obj_ca_f(X[-1])+ obj_f
-            Delta = fs - mean
+            Delta = fs - mean - 0.01
             sigma = sqrt(var_obj(vertcat(*U)))
             # Delta_p = np.max(mean(X) - fs)
             # if sigma == 0.:
@@ -1099,7 +1099,7 @@ class ITR_GP_RTO:
 
     def find_min_so_far(self,funcs_system, X_opt):
             # ynew[0,ii] = funcs[ii](np.array(xnew[:]).flatten())
-        min = -1.
+        min = np.inf#-1.
         for i in range(len(X_opt)):
                 y= funcs_system[0](np.array(X_opt[i]).flatten())
                 if y< min:

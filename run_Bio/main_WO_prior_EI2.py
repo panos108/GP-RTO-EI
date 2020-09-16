@@ -50,7 +50,7 @@ for i in range(8):
 
 
     plant = Bio_system(nk=6)
-    model = Bio_model(nk=6, empty=True)#empy=True)
+    model = Bio_model(nk=6, empty=False)#empy=True)
 
     u = [0.]*plant.nk*plant.nu
     xf = plant.bio_obj_ca(u)
@@ -100,7 +100,7 @@ for i in range(8):
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
-                                    n_iter, data, np.array(bounds),obj_setting=3, noise=noise, multi_opt=40,
+                                    n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=40,
                                     multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_, scale_inputs=False, model=model)
 

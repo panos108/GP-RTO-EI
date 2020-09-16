@@ -118,8 +118,6 @@ for i in range(30):
         cons_model.append(functools.partial(model.bio_con1_ca, k+1))
         cons_model.append(functools.partial(model.bio_con2_ca, k+1))
 
-
-
     # obj_model  = obj_empty
     # cons_model = []# l.WO_obj_ca
     # for k in range(model.nk):
