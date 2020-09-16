@@ -429,7 +429,7 @@ def plot_obj(obj):
     plt.rcParams.update(params)
 
     obj_no_prior_with_exploration_ei = obj('no_prior_with_exploration_ei')
-    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei_new2')#'with_prior_with_exploration_ei')
+    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei')#'with_prior_with_exploration_ei')
     # obj_with_prior_with_exploration_ei_noise  = obj('with_prior_with_exploration_ei_noise')
     # obj_no_prior_with_exploration_ei_noise    = obj('no_prior_with_exploration_ei_noise')
     obj_no_prior_with_exploration_ucb = obj('no_prior_with_exploration_ucb')
@@ -459,7 +459,7 @@ def plot_obj(obj):
         plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
                          , np.quantile(obj_, 0.95, axis=0),
                          alpha=0.2, color='#' + color[i])
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
     plt.xlim(1, ni)
@@ -468,7 +468,7 @@ def plot_obj(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_WO/EXplore_no_explore_obj.png', dpi=400)
+    plt.savefig('figs/EXplore_no_explore_obj.png', dpi=400)
     plt.close()
 
     data = [obj_no_prior_with_exploration_ei[-1],
@@ -489,7 +489,7 @@ def plot_obj(obj):
         plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
                          , np.quantile(obj_, 0.95, axis=0),
                          alpha=0.2, color='#' + color[i])
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -499,7 +499,7 @@ def plot_obj(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_WO/EI_prior.png', dpi=400)
+    plt.savefig('figs/EI_prior.png', dpi=400)
     plt.close()
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
@@ -522,7 +522,7 @@ def plot_obj(obj):
                          alpha=0.2, color='#' + color[i])
 
         print(obj_min.min())
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -532,7 +532,7 @@ def plot_obj(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_WO/UCB_prior.png', dpi=400)
+    plt.savefig('figs/UCB_prior.png', dpi=400)
     plt.close()
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
@@ -555,7 +555,7 @@ def plot_obj(obj):
                          alpha=0.2, color='#' + color[i])
 
         print(obj_min.min())
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -565,7 +565,7 @@ def plot_obj(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_WO/noexplore_prior.png', dpi=400)
+    plt.savefig('figs/noexplore_prior.png', dpi=400)
     plt.close()
     return print(1)
 
@@ -617,7 +617,7 @@ def plot_obj_noise(obj):
         plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
                          , np.quantile(obj_, 0.95, axis=0),
                          alpha=0.2, color='#' + color[i])
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
     plt.xlim(1, ni)
@@ -626,7 +626,7 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise_WO/EXplore_no_explore_obj.png', dpi=400)
+    plt.savefig('figs_noise/EXplore_no_explore_obj.png', dpi=400)
     plt.close()
 
     data = [obj_no_prior_with_exploration_ei_noise[-1],
@@ -647,7 +647,7 @@ def plot_obj_noise(obj):
         plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
                          , np.quantile(obj_, 0.95, axis=0),
                          alpha=0.2, color='#' + color[i])
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -657,7 +657,7 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise_WO/EI_prior.png', dpi=400)
+    plt.savefig('figs_noise/EI_prior.png', dpi=400)
     plt.close()
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
@@ -680,7 +680,7 @@ def plot_obj_noise(obj):
                          alpha=0.2, color='#' + color[i])
 
         print(obj_min.min())
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -690,7 +690,7 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise_WO/UCB_prior.png', dpi=400)
+    plt.savefig('figs_noise/UCB_prior.png', dpi=400)
     plt.close()
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
@@ -713,7 +713,7 @@ def plot_obj_noise(obj):
                          alpha=0.2, color='#' + color[i])
 
         print(obj_min.min())
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
 
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
@@ -723,6 +723,6 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise_WO/noexplore_prior.png', dpi=400)
+    plt.savefig('figs_noise/noexplore_prior.png', dpi=400)
     plt.close()
     return print(1)

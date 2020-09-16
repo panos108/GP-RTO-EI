@@ -17,13 +17,13 @@ from casadi import *
 from sub_uts.utilities_2 import *
 from sub_uts.systems import *
 import pickle
-from plots_RTO import plot_obj, Plot_simple
+from plots_RTO import plot_obj, Plot_simple, compute_obj_simple
 if not(os.path.exists('figs')):
     os.mkdir('figs')
 if not(os.path.exists('figs_noise')):
     os.mkdir('figs_noise')
 
-
+print(2)
 # plot_obj()
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#
 #---------------------------------------------#
