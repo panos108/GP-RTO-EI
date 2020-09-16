@@ -429,7 +429,7 @@ def plot_obj(obj):
     plt.rcParams.update(params)
 
     obj_no_prior_with_exploration_ei = obj('no_prior_with_exploration_ei')
-    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei_new2')#'with_prior_with_exploration_ei')
+    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei_new2_new2')#'with_prior_with_exploration_ei')
     # obj_with_prior_with_exploration_ei_noise  = obj('with_prior_with_exploration_ei_noise')
     # obj_no_prior_with_exploration_ei_noise    = obj('no_prior_with_exploration_ei_noise')
     obj_no_prior_with_exploration_ucb = obj('no_prior_with_exploration_ucb')

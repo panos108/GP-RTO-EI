@@ -89,8 +89,8 @@ if not(os.path.exists('figs_noise_WO')):
 # Plot('with_prior_no_exploration')
 # Plot('with_prior_no_exploration_noise')
 # Plot('no_prior_no_exploration_noise')
-plot_obj(compute_obj)
-plot_obj_noise(compute_obj)
+# plot_obj(compute_obj)
+# plot_obj_noise(compute_obj)
 
 #-----------------------------------------------------------------------#
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#
@@ -133,7 +133,7 @@ for i in range(30):
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
-                                    n_iter, data, np.array(bounds),obj_setting=3, noise=noise, multi_opt=30,
+                                    n_iter, data, np.array(bounds),obj_setting=1, noise=noise, multi_opt=30,
                                     multi_hyper=15, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_, scale_inputs=True)
 
@@ -150,7 +150,7 @@ for i in range(30):
     xnew_mc        += [xnew]
     backtrack_1_mc += [backtrack_l]
 print(2)
-pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_with_exploration_ei_new2.p','wb'))
+pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_no_exploration_new2.p','wb'))
 
 
 
