@@ -429,11 +429,11 @@ def plot_obj(obj):
     plt.rcParams.update(params)
 
     obj_no_prior_with_exploration_ei = obj('no_prior_with_exploration_ei')
-    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei_new2_new2')#'with_prior_with_exploration_ei')
+    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei_new2')#'with_prior_with_exploration_ei')
     # obj_with_prior_with_exploration_ei_noise  = obj('with_prior_with_exploration_ei_noise')
     # obj_no_prior_with_exploration_ei_noise    = obj('no_prior_with_exploration_ei_noise')
     obj_no_prior_with_exploration_ucb = obj('no_prior_with_exploration_ucb')
-    obj_with_prior_with_exploration_ucb = obj('with_prior_with_exploration_ucb')
+    obj_with_prior_with_exploration_ucb = obj('with_prior_with_exploration_ucb_new2')
     # obj_with_prior_with_exploration_ucb_noise = obj('with_prior_with_exploration_ucb_noise')
     # obj_no_prior_with_exploration_ucb_noise   = obj('no_prior_with_exploration_ucb_noise')
     # obj_no_prior_no_exploration = obj('no_prior_no_exploration')
@@ -444,12 +444,12 @@ def plot_obj(obj):
     data = [  # obj_no_prior_with_exploration_ei[-1],
         obj_with_prior_with_exploration_ei[-1],
         # obj_no_prior_with_exploration_ucb[-1],
-        obj_with_prior_with_exploration_ucb[-1],
+        obj_with_prior_with_exploration_ucb[-1]]#,
         # obj_no_prior_no_exploration[-1]]
-        obj_with_prior_no_exploration[-1]]
+        #obj_with_prior_no_exploration[-1]]
     ni = 20
-    color = ['AA3939', '226666', '7B9F35']
-    label = ['EI', 'LCB', 'No Exploration']
+    color = ['AA3939', '226666']#, '7B9F35']
+    label = ['EI', 'LCB']#, 'No Exploration']
     for i, obj_ in reversed(list((enumerate(data)))):
         obj_mean = obj_.mean(axis=0)
         obj_max = obj_.max(axis=0)

@@ -89,7 +89,7 @@ if not(os.path.exists('figs_noise_WO')):
 # Plot('with_prior_no_exploration')
 # Plot('with_prior_no_exploration_noise')
 # Plot('no_prior_no_exploration_noise')
-# plot_obj(compute_obj)
+plot_obj(compute_obj)
 # plot_obj_noise(compute_obj)
 
 #-----------------------------------------------------------------------#
