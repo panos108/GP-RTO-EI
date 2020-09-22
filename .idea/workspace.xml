@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="65">
-              <caret line="156" column="62" selection-start-line="156" selection-start-column="62" selection-end-line="156" selection-end-column="62" />
+            <state relative-caret-position="1380">
+              <caret line="91" selection-start-line="91" selection-end-line="91" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -28,29 +28,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2240">
+            <state relative-caret-position="12620">
               <caret line="646" selection-start-line="646" selection-end-line="646" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sub_uts/systems2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1647">
-              <caret line="392" column="100" selection-start-line="392" selection-start-column="97" selection-end-line="392" selection-end-column="100" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-64">
-              <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -58,7 +37,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-19">
+            <state relative-caret-position="12460">
               <caret line="638" column="43" selection-start-line="638" selection-start-column="43" selection-end-line="638" selection-end-column="43" />
             </state>
           </provider>
@@ -67,8 +46,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/plots_RTO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="876" column="11" selection-start-line="876" selection-start-column="11" selection-end-line="876" selection-end-column="11" />
+            <state relative-caret-position="27">
+              <caret line="814" selection-start-line="814" selection-end-line="814" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
                 <element signature="e#13662#14668#0" />
@@ -80,7 +59,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_simple/main_simple.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
+            <state relative-caret-position="200">
               <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -100,10 +79,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ca_</find>
-      <find>epi</find>
-      <find>matern</find>
-      <find>X_opt</find>
       <find>obj_min</find>
       <find>prior</find>
       <find>obj_max</find>
@@ -130,6 +105,10 @@
       <find>bio</find>
       <find>75</find>
       <find>qua</find>
+      <find>exploration_n</find>
+      <find>exploration_no</find>
+      <find>.png</find>
+      <find>new2_</find>
     </findStrings>
     <replaceStrings>
       <replace>Benoit_Model</replace>
@@ -175,9 +154,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-11" />
-    <option name="width" value="1934" />
-    <option name="height" value="1019" />
+    <option name="x" value="-7" />
+    <option name="width" value="1288" />
+    <option name="height" value="687" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -297,16 +276,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1289" height="679" extended-state="0" />
+    <frame x="-7" y="0" width="1288" height="687" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7967033" visible="true" weight="0.2897047" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7967033" visible="true" weight="0.4392" />
       <window_info id="Structure" order="1" sideWeight="0.20304568" side_tool="true" weight="0.17334495" />
       <window_info id="Favorites" order="2" sideWeight="0.2032967" side_tool="true" weight="0.15806195" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.5319149" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32978722" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.46350366" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.94525546" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32978722" />
@@ -372,16 +351,6 @@
           <option name="timeStamp" value="387" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/plots_RTO.py</url>
-          <line>415</line>
-          <option name="timeStamp" value="398" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/plots_RTO.py</url>
-          <line>470</line>
-          <option name="timeStamp" value="399" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_simple/main_simple.py</url>
           <line>25</line>
           <option name="timeStamp" value="400" />
@@ -392,9 +361,9 @@
           <option name="timeStamp" value="402" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py</url>
-          <line>31</line>
-          <option name="timeStamp" value="403" />
+          <url>file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py</url>
+          <line>94</line>
+          <option name="timeStamp" value="404" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -535,52 +504,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_simple/plots_RTO_simple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="410" lean-forward="true" selection-start-line="410" selection-end-line="410" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-            <element signature="e#15987#22568#0" />
-            <element signature="e#22600#29197#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_simple/main_simple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-19">
-          <caret line="638" column="43" selection-start-line="638" selection-start-column="43" selection-end-line="638" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="65">
-          <caret line="156" column="62" selection-start-line="156" selection-start-column="62" selection-end-line="156" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2240">
-          <caret line="646" selection-start-line="646" selection-end-line="646" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/run_simple/plots_RTO_simple.py" />
     <entry file="file://$PROJECT_DIR$/run_Bio/main_WO_prior_EI2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-64">
@@ -598,10 +522,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/run_WO/main_WO_prior_EI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1380">
+          <caret line="91" selection-start-line="91" selection-end-line="91" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/systems.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12620">
+          <caret line="646" selection-start-line="646" selection-end-line="646" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sub_uts/utilities_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12460">
+          <caret line="638" column="43" selection-start-line="638" selection-start-column="43" selection-end-line="638" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_simple/main_simple.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/plots_RTO.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="876" column="11" selection-start-line="876" selection-start-column="11" selection-end-line="876" selection-end-column="11" />
+        <state relative-caret-position="27">
+          <caret line="814" selection-start-line="814" selection-end-line="814" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
             <element signature="e#13662#14668#0" />
