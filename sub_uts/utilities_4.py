@@ -375,7 +375,7 @@ class ITR_GP_RTO:
                  Delta0, Delta_max, eta0, eta1, gamma_red, gamma_incr,
                  n_iter, data, bounds, obj_setting=2, noise=None, multi_opt=5, multi_hyper=10, TR_scaling=True,
                  TR_curvature=True, store_data=True, inner_TR=False, scale_inputs=False,GP_casadi=True,
-                 model=None,kernel='Matern32'):
+                 model=None,kernel='Matern32', Use_GP_for_model=True):
         '''
         data = ['int', bound_list=[[0,10],[-5,5],[3,8]], samples_number] <=> d = ['int', np.array([[-12, 8]]), 3]
         data = ['data0', Xtrain]
@@ -399,6 +399,7 @@ class ITR_GP_RTO:
         self.inner_TR = inner_TR
         self.scale_inputs = scale_inputs
         self.kernel=kernel
+        self.Use_GP_for_model = Use_GP_for_model
         # other definitions
         if scale_inputs:
             self.TRmat = np.linalg.inv(np.diag(bounds[:, 1] - bounds[:, 0]))
@@ -410,6 +411,7 @@ class ITR_GP_RTO:
             self.noise = [None]*self.ng
         self.Delta0 = Delta0
         # data creating
+
         self.Xtrain, self.ytrain = self.data_handling()
         self.ndim, self.ndat = self.Xtrain.shape[1], self.Xtrain.shape[0]
         # alerts
@@ -439,7 +441,6 @@ class ITR_GP_RTO:
             Xtrain = data[1]
             Xtrain, ytrain = self.compute_data(data, Xtrain)
             return Xtrain, ytrain
-
         else:
             print('- error, data ragument ', data, ' is of wrong type; can be int or ')
             return None
@@ -498,10 +499,8 @@ class ITR_GP_RTO:
                 # not meant for multi-output
                 ytrain[ii, :] = fx
 
-        Xtrain = np.array(Xtrain)
-        ytrain = np.array(ytrain)
-
-        return Xtrain.reshape(ndata, ndim, order='F'), ytrain.reshape(ng + 1, ndata, order='F')
+        return Xtrain.reshape(ndata, ndim, order='F'),\
+                   ytrain.reshape(ng + 1, ndata, order='F')
 
     ##############################
     # --- GP as obj function --- #
@@ -746,7 +745,7 @@ class ITR_GP_RTO:
     # --- Random Sampling in an ellipse --- #
     #########################################
 
-    def Ellipse_sampling(self, ndim):
+    def Ellipse_sampling(self, ndim, sample_GP_model=False):
         '''
         This function samples randomly withing a ball of radius self.Delta0
         '''
@@ -756,7 +755,11 @@ class ITR_GP_RTO:
         # d_init = r * u / norm * self.Delta0**0.5  # random sampling in a ball
 
         Gamma_Threshold = 0.99  # 9.2103
-        S = np.linalg.inv(self.TRmat) * self.Delta0 ** 2
+        if sample_GP_model:
+            S = np.linalg.inv(self.TRmat) * self.Delta0 ** 2
+        else:
+            S = np.linalg.inv(self.TRmat) * (self.Delta0*1.1) ** 2
+
         z_hat = np.zeros(ndim)
         m_FA = 200
         nz = ndim
@@ -950,7 +953,8 @@ class ITR_GP_RTO:
                           multi_hyper=multi_hyper, var_out=True, GP_casadi=True)
         else:
             GP_obj = GP_model(Xtrain, ytrain[0, :].reshape(ndat, 1), self.kernel,
-                          multi_hyper=multi_hyper, var_out=True, noise = self.noise[0], GP_casadi=True)
+                          multi_hyper=multi_hyper, var_out=True, noise = self.noise[0],
+                              GP_casadi=True)
         GP_con = [0] * ng  # Gaussian processes that output mistmatch (functools)
         GP_con_2 = [0] * ng  # Constraints for the NLP
 
@@ -1096,6 +1100,117 @@ class ITR_GP_RTO:
         return problem, w0, lbw, ubw, lbg, ubg, trajectories, opts
 
 
+    def construct_opt_ca_with_GPception(self, d_init, uk, GP_obj, GP_con, GP_obj_model, GP_con_model):
+        u_init = d_init.reshape(uk.shape) + uk
+        x0 = self.model.x0#np.array([1., 150., 0.])
+        x = MX.sym('x_0',self.model.nd)
+        w = []
+        w0 = []
+        lbw = []
+        ubw = []
+
+        g = []
+        lbg = []
+        ubg = []
+        U = []
+        w += [x]
+
+        lbw.extend([0]*self.model.nd)
+        ubw.extend([1000]*self.model.nd)
+        w0.extend(x0)
+
+
+        g   += [x - x0]
+        lbg.extend([-0.00001]*self.model.nd)
+        ubg.extend([0.00001]*self.model.nd)
+        X  = []
+        gg = []
+        xx = []
+        yy = []
+        zz = []
+        # for i in range(self.model.nk):
+        #     u = MX.sym('u_'+str(i), model.nu)
+        #     w += [u]
+        #     lbw.extend([0] * model.nu)
+        #     ubw.extend([1] * model.nu)
+        #     w0.extend(u_init[model.nu*i:model.nu*i+model.nu])
+        #     U += [u]
+        #     x1 = f(x,u)* (not(model.empty)).real
+        #     x = MX.sym('x_'+str(i+1),model.nd)
+        #     X += [x1]
+        #     g += [x1-x]
+        #     lbg.extend([-0.00001]*model.nd)
+        #     ubg.extend([0.00001]*model.nd)
+        #
+        #     w += [x]
+        #
+        #     lbw.extend([0]*model.nd)
+        #     ubw.extend([inf]*model.nd)
+        #     w0.extend(x0)
+        #     gg += [model.bio_con1_ca_f(x1)]
+        #     gg += [model.bio_con2_ca_f(x1)]
+        # Sum_slack = 0
+        for i in range(self.model.nk*self.model.nu):
+
+            mean, var = GP_con[i].GP_predictor(kernel=self.kernel)
+            mean_model, var_model = GP_con_model[i].GP_predictor(kernel=self.kernel)
+
+            slack = MX.sym('s_'+str(i))
+            # w += [slack]
+            # w0.extend([0.])
+            # lbw.extend([0])
+            # ubw.extend([inf])
+            # Sum_slack += (slack**2)
+            g += [mean(vertcat(*U))+ mean_model(vertcat(*U))]# + slack]
+            xx+= [mean(vertcat(*U))]
+            lbg.extend([0.])
+            ubg.extend([inf])
+
+        g += [sum1((vertcat(*U)-uk.reshape(-1,1))**2)-self.Delta0 ** 2]
+        lbg.extend([-inf])
+        ubg.extend([0.])
+        mean_obj, var_obj = GP_obj.GP_predictor(kernel=self.kernel)
+        mean_obj_model, var_obj_model = GP_obj_model.GP_predictor(kernel=self.kernel)
+
+        if self.obj == 1:
+            obj = mean_obj_model(vertcat(*U)) + mean_obj(vertcat(*U))
+        elif self.obj == 2:
+            obj = mean_obj_model(vertcat(*U)) + mean_obj(vertcat(*U)) \
+                  - 3 * sqrt(var_obj(vertcat(*U))+var_obj_model(vertcat(*U)))  # + 1e4*Sum_slack
+        elif self.obj == 3:
+            fs          = self.obj_min
+            obj_f       = mean_obj(vertcat(*U))
+            obj_f_model = mean_obj_model(vertcat(*U))
+
+            mean =  obj_f_model+ obj_f
+            Delta = fs - mean - 0.01
+            sigma = sqrt(var_obj(vertcat(*U))+var_obj_model(vertcat(*U)))
+            # Delta_p = np.max(mean(X) - fs)
+            # if sigma == 0.:
+            #     Z = 0.
+            # else:
+            Z = (Delta) / sigma
+            norm_pdf = exp(-Z**2/2)/sqrt(2*np.pi)
+            norm_cdf = 0.5 * (1+ erf(Z/sqrt(2)))
+            obj = -(sigma * norm_pdf + Delta * norm_cdf)
+        yy += [mean_obj_model(vertcat(*U))]
+        zz += [mean_obj(vertcat(*U))]
+        opts                                  = {}
+        opts["expand"]                        = True
+        opts["ipopt.print_level"]             = 0
+        opts["ipopt.max_iter"]                = 1000
+        opts["ipopt.tol"]                     = 1e-8
+        opts["calc_lam_p"]                    = False
+        opts["calc_multipliers"]              = False
+        opts["ipopt.print_timing_statistics"] = "no"
+        opts["print_time"]              = False
+        problem = {'f': obj, 'x': vertcat(*w), 'g': vertcat(*g)}
+        trajectories = Function('trajectories', [vertcat(*w)]
+                                , [horzcat(*U), horzcat(*X), horzcat(*gg), horzcat(*xx), horzcat(*yy), horzcat(*zz)],
+                                ['w'], ['x', 'u' ,'gg', 'gpc', 'objm', 'gpobj'])
+
+        return problem, w0, lbw, ubw, lbg, ubg, trajectories, opts
+
 
     def find_min_so_far(self,funcs_system, X_opt):
             # ynew[0,ii] = funcs[ii](np.array(xnew[:]).flatten())
@@ -1108,6 +1223,26 @@ class ITR_GP_RTO:
     ######################################
     # --- Real-Time Optimization alg --- #
     ######################################
+
+    def train_GP_model(self, x, N=50):
+        funcs_model = [self.obj_model] + self.cons_model
+        xx = np.zeros([N, self.ndim])
+        for i in range(N):
+            dx = self.Ellipse_sampling(ndim=self.ndim, sample_GP_model=True)
+            xx[i,:] = dx+x
+        Xtrain = xx
+        model_train = np.zeros((self.ng + 1, N))
+
+        for ii in range(self.ng + 1):
+            for i in range(N):
+                model_train[ii, i] = funcs_model[ii](np.array(Xtrain[i, :]))
+
+        model_train = np.array(model_train)  #
+        #CHECK DIMENTIONALITY
+        GP_obj_model, GP_con_f_model, GP_con_model = self.GPs_construction(x, Xtrain, model_train, 1)
+
+        return GP_obj_model, GP_con_f_model, GP_con_model
+
 
     def RTO_routine(self):
         '''
@@ -1155,11 +1290,14 @@ class ITR_GP_RTO:
         for ii in range(ng + 1):
             ynew[0, ii] = funcs_system[ii](np.array(xnew[:]).flatten()) - funcs_model[ii](np.array(xnew[:]).flatten())
         ytrain = np.hstack((ytrain, ynew.T))
+        # --- Data for approximating the model --- #
         # --- building GP models for first time --- #
         if TR_scaling and TR_curvature:
             GP_obj, GP_con_f, GP_con = GPs_construction(xnew, Xtrain, ytrain, 1, H_norm)
         else:
             GP_obj, GP_con_f, GP_con = GPs_construction(xnew, Xtrain, ytrain, 1)
+        if self.Use_GP_for_model:
+            GP_obj_model, GP_con_f_model, GP_con_model = self.train_GP_model(x=xnew)
 
         # renaming data
         X_opt = np.copy(Xtrain)
@@ -1201,7 +1339,16 @@ class ITR_GP_RTO:
                 # GP optimization
                 # res = minimize(GP_obj_f, d_init, args=(GP_obj, xk), method='SLSQP',
                 #                options=options, bounds=(TRb), constraints=GP_con_f, tol=1e-12)
-                problem, w0, lbw, ubw, lbg, ubg,trajectories, opts = self.construct_opt_ca(d_init, xk.reshape((-1,1)), GP_obj, GP_con, self.model)
+                if self.Use_GP_for_model:
+                    problem, w0, lbw, ubw, lbg, ubg,trajectories, opts =\
+                        self.construct_opt_ca_with_GPception(
+                            d_init, xk.reshape((-1,1)), GP_obj, GP_con,
+                            GP_obj_model, GP_con_model)
+                else:
+                    problem, w0, lbw, ubw, lbg, ubg,trajectories, opts =\
+                        self.construct_opt_ca(d_init, xk.reshape((-1,1)), GP_obj, GP_con, self.model)
+
+
                 solver = nlpsol('solver', 'ipopt', problem, opts)#, "ipopt.max_iter": 1e4})  # , {"ipopt.hessian_approximation":"limited-memory"})#, {"ipopt.tol": 1e-10, "ipopt.print_level": 0})#, {"ipopt.hessian_approximation":"limited-memory"})
                 # Function to get x and u trajectories from w
 
@@ -1250,7 +1397,8 @@ class ITR_GP_RTO:
                 GP_obj, GP_con_f, GP_con = GPs_construction(xnew, X_opt, y_opt, 2 + i_rto, H_norm)
             else:
                 GP_obj, GP_con_f, GP_con = GPs_construction(xnew, X_opt, y_opt, 2 + i_rto)
-
+            if self.Use_GP_for_model:
+                 GP_obj_model, GP_con_f_model, GP_con_model = self.train_GP_model(x=xnew)
             # --- TR listing --- #
             if not TR_scaling:  # if normal TR
                 TR_l[i_rto + 1] = self.Delta0
