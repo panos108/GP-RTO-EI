@@ -28,6 +28,7 @@ if not(os.path.exists('figs_WO')):
 if not(os.path.exists('figs_noise_WO')):
     os.mkdir('figs_noise_WO')
 
+<<<<<<< Updated upstream
 # obj_no_prior_with_exploration_ei          = compute_obj('no_prior_with_exploration_ei')
 # obj_with_prior_with_exploration_ei        = compute_obj('with_prior_with_exploration_ei')
 # obj_with_prior_with_exploration_ei_noise  = compute_obj('with_prior_with_exploration_ei_noise')
@@ -91,6 +92,9 @@ if not(os.path.exists('figs_noise_WO')):
 # Plot('no_prior_no_exploration_noise')
 # plot_obj(compute_obj)
 # plot_obj_noise(compute_obj)
+=======
+plot_obj(compute_obj)
+>>>>>>> Stashed changes
 
 np.random.seed(0)
 X_opt_mc = []
