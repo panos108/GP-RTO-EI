@@ -35,7 +35,7 @@ y_opt_mc = []
 TR_l_mc = []
 xnew_mc = []
 backtrack_1_mc = []
-plant = Bio_system(nk=2)
+plant = Bio_system(nk=3)
 
 obj_system = plant.bio_obj_ca
 cons_system = []  # l.WO_obj_ca
@@ -49,8 +49,8 @@ for i in range(8):
 
 
 
-    plant = Bio_system(nk=2)
-    model = Bio_model(nk=2, empty=False)#empy=True)
+    plant = Bio_system(nk=3)
+    model = Bio_model(nk=3, empty=False)#empy=True)
 
     u = [0.]*plant.nk*plant.nu
     xf = plant.bio_obj_ca(u)
@@ -89,7 +89,7 @@ for i in range(8):
     data           = ['data0', Xtrain]
     u0             = X[start]#model.nk*model.nu+1]#np.array([*[0.6]*model.nk,*[0.8]*model.nk])#
 
-    Delta0         = 0.25
+    Delta0         = 0.3
     Delta_max      =5.; eta0=0.2; eta1=0.8; gamma_red=0.8; gamma_incr=1.2
     TR_scaling_    = False
     TR_curvature_  = False
@@ -101,7 +101,7 @@ for i in range(8):
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
                                     Delta_max, eta0, eta1, gamma_red, gamma_incr,
                                     n_iter, data, np.array(bounds),obj_setting=2, noise=noise, multi_opt=40,
-                                    multi_hyper=10, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
+                                    multi_hyper=3, TR_scaling=TR_scaling_, TR_curvature=TR_curvature_,
                                     store_data=True, inner_TR=inner_TR_, scale_inputs=False, model=model)
 
     print('Episode: ',i)

@@ -1102,8 +1102,8 @@ class ITR_GP_RTO:
 
     def construct_opt_ca_with_GPception(self, d_init, uk, GP_obj, GP_con, GP_obj_model, GP_con_model):
         u_init = d_init.reshape(uk.shape) + uk
-        x0 = self.model.x0#np.array([1., 150., 0.])
-        x = MX.sym('x_0',self.model.nd)
+        # x0 = self.model.x0#np.array([1., 150., 0.])
+        # x = MX.sym('x_0',self.model.nd)
         w = []
         w0 = []
         lbw = []
@@ -1113,28 +1113,28 @@ class ITR_GP_RTO:
         lbg = []
         ubg = []
         U = []
-        w += [x]
-
-        lbw.extend([0]*self.model.nd)
-        ubw.extend([1000]*self.model.nd)
-        w0.extend(x0)
-
-
-        g   += [x - x0]
-        lbg.extend([-0.00001]*self.model.nd)
-        ubg.extend([0.00001]*self.model.nd)
+        # w += [x]
+        #
+        # lbw.extend([0]*self.model.nd)
+        # ubw.extend([1000]*self.model.nd)
+        # w0.extend(x0)
+        #
+        #
+        # g   += [x - x0]
+        # lbg.extend([-0.00001]*self.model.nd)
+        # ubg.extend([0.00001]*self.model.nd)
         X  = []
         gg = []
         xx = []
         yy = []
         zz = []
-        # for i in range(self.model.nk):
-        #     u = MX.sym('u_'+str(i), model.nu)
-        #     w += [u]
-        #     lbw.extend([0] * model.nu)
-        #     ubw.extend([1] * model.nu)
-        #     w0.extend(u_init[model.nu*i:model.nu*i+model.nu])
-        #     U += [u]
+        for i in range(self.model.nk):
+            u = MX.sym('u_'+str(i), self.model.nu)
+            w += [u]
+            lbw.extend([0] * self.model.nu)
+            ubw.extend([1] * self.model.nu)
+            w0.extend(u_init[self.model.nu*i:self.model.nu*i+self.model.nu])
+            U += [u]
         #     x1 = f(x,u)* (not(model.empty)).real
         #     x = MX.sym('x_'+str(i+1),model.nd)
         #     X += [x1]
@@ -1162,7 +1162,7 @@ class ITR_GP_RTO:
             # ubw.extend([inf])
             # Sum_slack += (slack**2)
             g += [mean(vertcat(*U))+ mean_model(vertcat(*U))]# + slack]
-            xx+= [mean(vertcat(*U))]
+            xx+= [mean(vertcat(*U))+ mean_model(vertcat(*U))]
             lbg.extend([0.])
             ubg.extend([inf])
 
@@ -1176,7 +1176,7 @@ class ITR_GP_RTO:
             obj = mean_obj_model(vertcat(*U)) + mean_obj(vertcat(*U))
         elif self.obj == 2:
             obj = mean_obj_model(vertcat(*U)) + mean_obj(vertcat(*U)) \
-                  - 3 * sqrt(var_obj(vertcat(*U))+var_obj_model(vertcat(*U)))  # + 1e4*Sum_slack
+                  - 3 * sqrt(var_obj(vertcat(*U)))  # + 1e4*Sum_slack
         elif self.obj == 3:
             fs          = self.obj_min
             obj_f       = mean_obj(vertcat(*U))
@@ -1231,15 +1231,15 @@ class ITR_GP_RTO:
             dx = self.Ellipse_sampling(ndim=self.ndim, sample_GP_model=True)
             xx[i,:] = dx+x
         Xtrain = xx
-        model_train = np.zeros((self.ng + 1, N))
+        model_train = np.zeros((N,self.ng + 1))
 
         for ii in range(self.ng + 1):
             for i in range(N):
-                model_train[ii, i] = funcs_model[ii](np.array(Xtrain[i, :]))
+                model_train[i, ii] = funcs_model[ii](np.array(Xtrain[i, :]))
 
-        model_train = np.array(model_train)  #
+        model_train = np.array(model_train).T  #
         #CHECK DIMENTIONALITY
-        GP_obj_model, GP_con_f_model, GP_con_model = self.GPs_construction(x, Xtrain, model_train, 1)
+        GP_obj_model, GP_con_f_model, GP_con_model = self.GPs_construction(x, Xtrain, model_train, N-self.ndat)
 
         return GP_obj_model, GP_con_f_model, GP_con_model
 
