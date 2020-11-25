@@ -588,15 +588,15 @@ def plot_obj_noise(obj):
 
     # obj_no_prior_with_exploration_ei = obj('no_prior_with_exploration_ei')
     # obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei')
-    obj_with_prior_with_exploration_ei_noise = obj('with_prior_with_exploration_ei_noise')
+    obj_with_prior_with_exploration_ei_noise = obj('with_prior_with_exploration_ei_noise2')
     obj_no_prior_with_exploration_ei_noise = obj('no_prior_with_exploration_ei_noise')
     # obj_no_prior_with_exploration_ucb = obj('no_prior_with_exploration_ucb')
     # obj_with_prior_with_exploration_ucb = obj('with_prior_with_exploration_ucb')
-    obj_with_prior_with_exploration_ucb_noise = obj('with_prior_with_exploration_ucb_noise')
+    obj_with_prior_with_exploration_ucb_noise = obj('with_prior_with_exploration_ucb_noise2')
     obj_no_prior_with_exploration_ucb_noise = obj('no_prior_with_exploration_ucb_noise')
     # obj_no_prior_no_exploration = obj('no_prior_no_exploration')
     # obj_with_prior_no_exploration = obj('with_prior_no_exploration')
-    obj_with_prior_no_exploration_noise = obj('with_prior_no_exploration_noise')
+    obj_with_prior_no_exploration_noise = obj('with_prior_no_exploration_noise2')
     obj_no_prior_no_exploration_noise = obj('no_prior_no_exploration_noise')
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
@@ -617,7 +617,7 @@ def plot_obj_noise(obj):
         plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
                          , np.quantile(obj_, 0.95, axis=0),
                          alpha=0.2, color='#' + color[i])
-    plt.plot(np.linspace(1, ni, ni), [275.811] * ni, 'k--', label='Real Optimum')
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
     plt.xlabel('RTO-iter')
     plt.ylabel('Objective')
     plt.xlim(1, ni)
