@@ -587,8 +587,10 @@ def plot_obj_noise(obj):
     plt.rcParams.update(params)
 
     # obj_no_prior_with_exploration_ei = obj('no_prior_with_exploration_ei')
-    # obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei')
+    obj_with_prior_with_exploration_ei = obj('with_prior_with_exploration_ei')
     obj_with_prior_with_exploration_ei_noise = obj('with_prior_with_exploration_ei_noise2')
+    obj_with_prior_with_exploration_ei_noise_wrong = obj('with_prior_with_exploration_ei_noise2_wrong')
+
     obj_no_prior_with_exploration_ei_noise = obj('no_prior_with_exploration_ei_noise')
     # obj_no_prior_with_exploration_ucb = obj('no_prior_with_exploration_ucb')
     # obj_with_prior_with_exploration_ucb = obj('with_prior_with_exploration_ucb')
@@ -600,14 +602,15 @@ def plot_obj_noise(obj):
     obj_no_prior_no_exploration_noise = obj('no_prior_no_exploration_noise')
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
+        obj_with_prior_with_exploration_ei_noise_wrong[-1],
         obj_with_prior_with_exploration_ei_noise[-1],
         # obj_no_prior_with_exploration_ucb[-1],
         obj_with_prior_with_exploration_ucb_noise[-1],
         # obj_no_prior_no_exploration[-1]]
         obj_with_prior_no_exploration_noise[-1]]
     ni = 20
-    color = ['AA3939', '226666', '7B9F35']
-    label = ['EI', 'UCB', 'No Exploration']
+    color = ['AA6C39','AA3939', '226666', '7B9F35']
+    label = ['Wrong Noise Assumption','EI', 'LCB', 'No Exploration']
     for i, obj_ in reversed(list((enumerate(data)))):
         obj_mean = obj_.mean(axis=0)
         obj_max = obj_.max(axis=0)
@@ -626,8 +629,45 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise_WO/EXplore_no_explore_obj.png', dpi=400)
+    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong.png', dpi=400)
     plt.close()
+
+
+    data = [  # obj_no_prior_with_exploration_ei[-1],
+        obj_with_prior_with_exploration_ei_noise_wrong[-1],
+        obj_with_prior_with_exploration_ei_noise[-1],
+        obj_with_prior_with_exploration_ei[-1],
+        # obj_no_prior_with_exploration_ucb[-1],
+        #obj_with_prior_with_exploration_ucb_noise[-1],
+        # obj_no_prior_no_exploration[-1]]
+        #obj_with_prior_no_exploration_noise[-1]
+        ]
+    ni = 20
+    line = ['-', ':','-.']
+    color = ['AA6C39','AA3939','7B9F35']
+    label = ['Wrong Noise Assumption','Correct Noise Assumption', 'With Noise Estimation']
+    for i, obj_ in reversed(list((enumerate(data)))):
+        obj_mean = obj_.mean(axis=0)
+        obj_max = obj_.max(axis=0)
+        obj_min = obj_.min(axis=0)
+        plt.plot(np.linspace(1, ni, ni), obj_mean,
+                 alpha=1., color='#' + color[i], linestyle=line[i],label=label[i])
+        plt.fill_between(np.linspace(1, ni, ni), np.quantile(obj_, 0.05, axis=0)
+                         , np.quantile(obj_, 0.95, axis=0),
+                         alpha=0.2, color='#' + color[i])
+    plt.plot(np.linspace(1, ni, ni), [0.145] * ni, 'k--', label='Real Optimum')
+    plt.xlabel('RTO-iter')
+    plt.ylabel('Objective')
+    plt.xlim(1, ni)
+    plt.legend()
+    plt.tick_params(right=True, top=True, left=True, bottom=True)
+    plt.tick_params(axis="y", direction="in")
+    plt.tick_params(axis="x", direction="in")
+    plt.tight_layout()
+    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong onlyEI2.png', dpi=400)
+    plt.close()
+
+
 
     data = [obj_no_prior_with_exploration_ei_noise[-1],
             obj_with_prior_with_exploration_ei_noise[-1]]

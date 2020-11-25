@@ -196,7 +196,7 @@ for i in range(30):
     TR_scaling_    = False
     TR_curvature_  = False
     inner_TR_      = False
-    noise = [ (1e-3)]*2
+    noise = [ (1e-4)]*2
 
 
     ITR_GP_opt         = ITR_GP_RTO(obj_model, obj_system, cons_model, cons_system, u0, Delta0,
@@ -218,7 +218,7 @@ for i in range(30):
     xnew_mc        += [xnew]
     backtrack_1_mc += [backtrack_l]
 print(2)
-pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_with_exploration_ei_noise2.p','wb'))
+pickle.dump([X_opt_mc, y_opt_mc,TR_l_mc, xnew_mc, backtrack_1_mc], open('with_prior_with_exploration_ei_noise2_wrong.p','wb'))
 # #-----------------------------------------------------------------------#
 # #----------4) EI-NO PRIOR-KNOWN NOISE----------#
 # #---------------------------------------------#
