@@ -70,7 +70,7 @@ class GP_model:
     ################################
     # --- Covariance of sample --- #
     ################################
-
+    # FIXME: CHECK KERNEL COMPATIBILITY
     def calc_cov_sample(self, xnorm, Xnorm, ell, sf2):
         '''
         Calculates the covariance of a single sample xnorm against the dataset Xnorm
@@ -194,6 +194,8 @@ class GP_model:
     ########################
     # --- GP inference --- #
     ########################
+    # FIXME: CHECK KERNEL COMPATIBILITY
+
     def GP_predictor(self, kernel='RBF'):# , X,Y):
             nd, invKopt, hypopt = self.ny_dim, self.invKopt, self.hypopt
             Ynorm, Xnorm = SX(DM(self.Y_norm)), SX(DM(self.X_norm))
@@ -235,6 +237,7 @@ class GP_model:
             # varfcnsd = Function('varfcnsd',[x],[var])
 
             return meanfcn, varfcn  # , meanfcn2, varfcnsd
+    # FIXME: CHECK KERNEL COMPATIBILITY
 
     def covSEard(self, kernel):
         nx_dim = self.nx_dim
@@ -261,6 +264,7 @@ class GP_model:
             covSEfcn = Function('covSEfcn',[x,z,ell,sf2],[0.])
         return covSEfcn
 
+    # FIXME: CHECK KERNEL COMPATIBILITY
 
     def GP_inference_np(self, x):
         '''
