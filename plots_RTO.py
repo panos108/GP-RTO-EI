@@ -809,11 +809,13 @@ plt.rc('text', usetex=True)
 params = {'legend.fontsize': 15,
           'legend.handlelength': 2}
 plt.rcParams.update(params)
-
+u1_opt = np.array([282.21090606, 282.21090606, 281.84839532, 280.74131362, 120.00896333, 120.01589492,
+ 222.34601803])
 # plt.step(np.linspace(0,6,7),(40-0)*np.array([np.array(X_opt_mc)[3,-1,1].T,*np.array(X_opt_mc)[3,-1,1::2].T])+0, where='pre',
 #          color='#AA3939', label='Proposed')
 plt.step(np.linspace(0,6,7),u1_opt, where='pre',
          color='#AA3939', label='Optimal')
+u1 = np.array(X_opt_mc)[:,:,::2]
 
 plt.fill_between(np.linspace(0,6,7),
                  np.quantile((400-120)*np.array([np.array(u1)[:,-1,1].T,
@@ -826,17 +828,17 @@ plt.step(np.linspace(0,6,7),((400-120)*np.array([np.array(u1)[:,-1,1].T,*np.arra
 
 plt.ylabel('$I [\mu$mol m$^{-2}$s$^{-1}]$ ')
 plt.xlabel('Normalized time [-]')
-plt.xlim(1, 6)
+plt.xlim(0, 6)
 plt.legend()
 plt.tick_params(right=True, top=True, left=True, bottom=True)
 plt.tick_params(axis="y", direction="in")
 plt.tick_params(axis="x", direction="in")
 plt.tight_layout()
-plt.savefig('figs_WO/I.png', dpi=400)
+plt.savefig('figs_WO/I2.png', dpi=400)
 plt.close()
 
-
-X_opt_mc, y_opt_mc, TR_l_mc, xnew_mc, backtrack_1_mc = pickle.load(open('no_prior_with_exploration_ei_no_red_constraint_violation_GP.p', 'rb'))
+#
+#X_opt_mc, y_opt_mc, TR_l_mc, xnew_mc, backtrack_1_mc = pickle.load(open('no_prior_with_exploration_ei_no_red_constraint_violation_GP.p', 'rb'))
 X_opt_mc_model, y_opt_mc, TR_l_mc, xnew_mc, backtrack_1_mc = pickle.load(open('prior_with_exploration_ei_no_red_constraint_violation.p', 'rb'))
 csfont = {'fontname': 'Times New Roman'}
 
@@ -853,9 +855,10 @@ plt.rcParams.update(params)
 
 # plt.step(np.linspace(0,6,7),(40-0)*np.array([np.array(X_opt_mc)[3,-1,1].T,*np.array(X_opt_mc)[3,-1,1::2].T])+0, where='pre',
 #          color='#AA3939', label='Proposed')
+u2_opt = np.array([25.06421834, 25.06421834, 16.03066446, 37.62476903, 39.99997563, 39.9999762,  39.99997472])
 plt.step(np.linspace(0,6,7),u2_opt, where='pre',
          color='#AA3939', label='Optimal')
-
+u2 = np.array(X_opt_mc)[:,:,1::2]
 plt.fill_between(np.linspace(0,6,7),
                  np.quantile((40)*np.array([np.array(u2)[:,-1,1].T,
                                                  *np.array(u2)[:,-1].T]),0.05,axis=1),
@@ -867,12 +870,12 @@ plt.step(np.linspace(0,6,7),((40)*np.array([np.array(u2)[:,-1,1].T,*np.array(u2)
 
 plt.ylabel('$F_{\sf N} [$mg L$^{-1}$h$^{-1}]$ ')
 plt.xlabel('Normalized time [-]')
-plt.xlim(1, 6)
+plt.xlim(0, 6)
 plt.legend()
 plt.tick_params(right=True, top=True, left=True, bottom=True)
 plt.tick_params(axis="y", direction="in")
 plt.tick_params(axis="x", direction="in")
 plt.tight_layout()
-plt.savefig('figs_WO/f_N.png', dpi=400)
+plt.savefig('figs_WO/f_N2.png', dpi=400)
 plt.close()
 
