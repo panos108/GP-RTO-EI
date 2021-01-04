@@ -17,12 +17,19 @@ from casadi import *
 from sub_uts.utilities_2 import *
 from sub_uts.systems import *
 import pickle
-from plots_RTO import plot_obj, Plot_simple, compute_obj_simple, plot_obj_noise
+from plots_RTO import plot_obj, Plot_simple, compute_obj_simple, plot_obj_noise, compute_obj_simple_ma
+import pandas as pd
 if not(os.path.exists('figs')):
     os.mkdir('figs')
 if not(os.path.exists('figs_noise')):
     os.mkdir('figs_noise')
 
+s = np.array(pd.read_csv('FD_K02_new3.csv'))
+useful = s[:43*30,:4]
+reshaped_use = useful.reshape((43,30,4))
+
+
+# objective_02 = compute_obj_simple_ma('FD_K02_new3.csv')
 
 plot_obj_noise(compute_obj_simple)
 #----------2) EI-PRIOR-UNKNOWN NOISE----------#

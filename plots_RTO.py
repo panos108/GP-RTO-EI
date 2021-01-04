@@ -377,6 +377,50 @@ def compute_obj_simple(path):
 
     return obj_mean, obj_max, obj_min, obj_1
 
+
+
+
+
+
+def compute_obj_simple_ma(path):
+    import pandas as pd
+    s = np.array(pd.read_csv(path))
+
+    obj_system = Benoit_System_noiseless
+    cons_system = [con1_system_tight_noiseless]
+
+    n = 30
+    ni = 41
+    samples_number = 3
+    obj_1 = np.zeros([n, ni])
+    for i in range(n):
+
+        for p_i in range(ni):
+            # if cons_system[0](s[p_i * i, 1:3]) < 0:  # np.array(backtrack_1_mc)[i,p_i]:
+            #     for j in reversed(range(p_i)):
+            #         if cons_system[0](s[p_i * i, 1:3]) >= 0:  # and np.array(backtrack_1_mc)[i,p_i-1]==False:
+            #             obj_1[i, p_i] = obj_1[i, j]
+            #             break
+            #
+            # else:
+            obj_1[i, p_i] = obj_system(s[i*ni+p_i, 1:3])
+
+            if obj_1[i, p_i] < 0.145:
+                obj_1[i, p_i] = 0.145
+
+    obj_mean = obj_1.mean(axis=0)
+    obj_max = obj_1.max(axis=0)
+    obj_min = obj_1.min(axis=0)
+
+    return obj_mean, obj_max, obj_min, obj_1
+
+
+
+
+
+
+
+
 def compute_obj(path):
     plant = WO_system()
 
@@ -410,6 +454,11 @@ def compute_obj(path):
     obj_min = obj_1.min(axis=0)
 
     return obj_mean, obj_max, obj_min, obj_1
+
+
+
+
+
 
 def plot_obj(obj):
 
@@ -602,15 +651,15 @@ def plot_obj_noise(obj):
     obj_no_prior_no_exploration_noise = obj('no_prior_no_exploration_noise')
 
     data = [  # obj_no_prior_with_exploration_ei[-1],
-        obj_with_prior_with_exploration_ei_noise_wrong[-1],
+        #obj_with_prior_with_exploration_ei_noise_wrong[-1],
         obj_with_prior_with_exploration_ei_noise[-1],
         # obj_no_prior_with_exploration_ucb[-1],
         obj_with_prior_with_exploration_ucb_noise[-1],
         # obj_no_prior_no_exploration[-1]]
         obj_with_prior_no_exploration_noise[-1]]
     ni = 20
-    color = ['AA6C39','AA3939', '226666', '7B9F35']
-    label = ['Wrong Noise Assumption','EI', 'LCB', 'No Exploration']
+    color = ['AA3939', '226666', '7B9F35']
+    label = ['EI', 'LCB', 'No Exploration']
     for i, obj_ in reversed(list((enumerate(data)))):
         obj_mean = obj_.mean(axis=0)
         obj_max = obj_.max(axis=0)
@@ -629,7 +678,7 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong.png', dpi=400)
+    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong1.png', dpi=400)
     plt.close()
 
 
@@ -644,8 +693,8 @@ def plot_obj_noise(obj):
         ]
     ni = 20
     line = ['-', ':','-.']
-    color = ['AA6C39','AA3939','7B9F35']
-    label = ['Wrong Noise Assumption','Correct Noise Assumption', 'With Noise Estimation']
+    color = ['AA3939','226666','7B9F35']
+    label = ['Underestimated Noise Specified','Correct Noise Specified', 'Noise Estimated']
     for i, obj_ in reversed(list((enumerate(data)))):
         obj_mean = obj_.mean(axis=0)
         obj_max = obj_.max(axis=0)
@@ -664,7 +713,7 @@ def plot_obj_noise(obj):
     plt.tick_params(axis="y", direction="in")
     plt.tick_params(axis="x", direction="in")
     plt.tight_layout()
-    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong onlyEI2.png', dpi=400)
+    plt.savefig('figs_noise/EXplore_no_explore_obj_withwrong onlyEI21.png', dpi=400)
     plt.close()
 
 
